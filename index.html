@@ -1,11 +1,952 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>LifePilot — Decide What to Do Next</title>
-<style>
-:root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#6d7688;--line:#e5e9f1;--p:#5b5cf0;--p2:#7b61ff;--good:#16a34a;--shadow:0 10px 30px rgba(31,41,71,.08)}*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#f7f8ff,#eef5ff);font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}button,input,textarea,select{font:inherit}button{cursor:pointer}.app{max-width:1200px;margin:auto;padding:22px}header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;display:grid;place-items:center;font-size:24px;font-weight:800}.brand h1{font-size:22px;margin:0}.brand p{margin:2px 0;color:var(--muted);font-size:13px}.top{display:flex;gap:8px}.btn{border:0;border-radius:12px;padding:11px 15px;background:#fff;color:var(--ink);box-shadow:0 3px 12px rgba(0,0,0,.06)}.btn.primary{background:var(--p);color:#fff}.btn.ghost{box-shadow:none;border:1px solid var(--line)}.hero{background:linear-gradient(135deg,#20265f,#5b5cf0);color:#fff;border-radius:26px;padding:28px;box-shadow:var(--shadow);margin-bottom:18px}.hero small{opacity:.75}.hero h2{font-size:32px;margin:7px 0}.hero p{margin:0 0 20px;opacity:.88}.next{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:18px}.next strong{font-size:18px}.nextrow{display:flex;justify-content:space-between;align-items:center;gap:15px}.next .btn{background:#fff;color:#272b70}.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}.card{background:var(--card);border:1px solid rgba(229,233,241,.8);border-radius:20px;padding:20px;box-shadow:var(--shadow);margin-bottom:18px}.card h3{margin:0 0 15px;font-size:18px}.sub{color:var(--muted);font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{padding:15px;background:#f8f9fd;border-radius:15px}.stat b{display:block;font-size:23px}.stat span{font-size:12px;color:var(--muted)}.item{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.item:last-child{border-bottom:0}.check{width:23px;height:23px;border-radius:50%;border:2px solid #cbd2df;background:#fff;flex:none}.check.done{background:var(--good);border-color:var(--good);color:#fff}.itemmain{flex:1}.itemmain b{display:block}.itemmain small{color:var(--muted)}.tag{font-size:11px;padding:5px 8px;border-radius:20px;background:#eef0ff;color:#4d4dd0}.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px}.quick button{padding:14px;border:1px dashed #cbd2df;background:#fafbff;border-radius:14px;text-align:left}.quick b{display:block}.quick span{font-size:12px;color:var(--muted)}.progress{height:9px;background:#edf0f5;border-radius:20px;overflow:hidden}.bar{height:100%;background:linear-gradient(90deg,var(--p),#9a70ff);border-radius:20px}.modal{display:none;position:fixed;inset:0;background:rgba(15,20,40,.55);padding:20px;z-index:10;align-items:center;justify-content:center}.modal.show{display:flex}.modalbox{width:min(600px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:24px;padding:22px}.form{display:grid;gap:12px}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{font-size:12px;font-weight:700;color:#596274}input,textarea,select{width:100%;margin-top:6px;border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;color:var(--ink)}textarea{min-height:100px;resize:vertical}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.empty{text-align:center;padding:25px;color:var(--muted)}@media(max-width:800px){.grid{grid-template-columns:1fr}.hero h2{font-size:27px}.nextrow{align-items:flex-start;flex-direction:column}.stats{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LifePilot — Your Personal AI Assistant</title>
 
-.voice-card{background:#fff;border:1px solid rgba(229,233,241,.9);border-radius:24px;padding:24px;margin-bottom:18px;box-shadow:var(--shadow);text-align:center}.voice-card h2{margin:4px 0 8px;font-size:28px}.voice-card p{margin:0 auto 18px;color:var(--muted);max-width:560px}.voice-orb{width:96px;height:96px;border-radius:50%;margin:12px auto;background:linear-gradient(135deg,var(--p),var(--p2));display:grid;place-items:center;color:#fff;font-size:38px;box-shadow:0 10px 30px rgba(91,92,240,.3)}.voice-orb.listening{animation:pulse 1.2s infinite}.voice-status{font-size:13px;font-weight:700;color:var(--muted);min-height:20px;margin-bottom:10px}.voice-btn{border:0;border-radius:16px;padding:14px 22px;background:var(--p);color:#fff;font-weight:800;font-size:16px}.voice-btn.stop{background:#20265f}.transcript{min-height:24px;margin:14px auto 0;padding:12px;border-radius:12px;background:#f7f8ff;color:var(--ink);max-width:680px}.voice-examples{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px}.voice-examples button{border:1px solid var(--line);background:#fff;border-radius:20px;padding:8px 12px;color:#4d4dd0;font-size:12px}@keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 10px 30px rgba(91,92,240,.3)}50%{transform:scale(1.07);box-shadow:0 14px 42px rgba(91,92,240,.5)}}
-</style></head><body>
-<div class="app"><header><div class="brand"><div class="logo">✓</div><div><h1>LifePilot</h1><p>The app that helps you decide what to do next.</p></div></div><div class="top"><button class="
+<style>
+:root{
+--bg:#f5f7fb;
+--card:#fff;
+--ink:#172033;
+--muted:#6d7688;
+--line:#e5e9f1;
+--p:#5b5cf0;
+--p2:#7b61ff;
+--good:#16a34a;
+--shadow:0 10px 30px rgba(31,41,71,.08)
+}
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+background:linear-gradient(135deg,#f7f8ff,#eef5ff);
+font-family:system-ui,-apple-system,Segoe UI,sans-serif;
+color:var(--ink)
+}
+
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+
+.app{
+max-width:1200px;
+margin:auto;
+padding:22px
+}
+
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:16px;
+margin-bottom:22px
+}
+
+.brand{
+display:flex;
+align-items:center;
+gap:12px
+}
+
+.logo{
+width:48px;
+height:48px;
+border-radius:15px;
+background:linear-gradient(135deg,var(--p),var(--p2));
+color:#fff;
+display:grid;
+place-items:center;
+font-size:24px;
+font-weight:800
+}
+
+.brand h1{
+font-size:22px;
+margin:0
+}
+
+.brand p{
+margin:2px 0;
+color:var(--muted);
+font-size:13px
+}
+
+.top{
+display:flex;
+gap:8px
+}
+
+.btn{
+border:0;
+border-radius:12px;
+padding:11px 15px;
+background:#fff;
+color:var(--ink);
+box-shadow:0 3px 12px rgba(0,0,0,.06)
+}
+
+.btn.primary{
+background:var(--p);
+color:#fff
+}
+
+.btn.ghost{
+box-shadow:none;
+border:1px solid var(--line)
+}
+
+/* VOICE ASSISTANT */
+
+.voice-card{
+background:#fff;
+border:1px solid rgba(229,233,241,.9);
+border-radius:26px;
+padding:28px 20px;
+margin-bottom:18px;
+box-shadow:var(--shadow);
+text-align:center
+}
+
+.voice-card h2{
+margin:5px 0 8px;
+font-size:30px
+}
+
+.voice-card p{
+margin:0 auto 20px;
+color:var(--muted);
+max-width:600px
+}
+
+.voice-orb{
+width:105px;
+height:105px;
+border-radius:50%;
+margin:10px auto 15px;
+background:linear-gradient(135deg,var(--p),var(--p2));
+display:grid;
+place-items:center;
+color:#fff;
+font-size:42px;
+box-shadow:0 10px 30px rgba(91,92,240,.3)
+}
+
+.voice-orb.listening{
+animation:pulse 1.2s infinite
+}
+
+.voice-status{
+font-size:14px;
+font-weight:700;
+color:var(--muted);
+min-height:22px;
+margin-bottom:12px
+}
+
+.voice-btn{
+border:0;
+border-radius:16px;
+padding:15px 25px;
+background:var(--p);
+color:#fff;
+font-weight:800;
+font-size:17px
+}
+
+.voice-btn.stop{
+background:#20265f
+}
+
+.transcript{
+min-height:25px;
+margin:16px auto 0;
+padding:13px;
+border-radius:13px;
+background:#f7f8ff;
+color:var(--ink);
+max-width:700px
+}
+
+.voice-examples{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:8px;
+margin-top:15px
+}
+
+.voice-examples button{
+border:1px solid var(--line);
+background:#fff;
+border-radius:20px;
+padding:9px 13px;
+color:#4d4dd0;
+font-size:12px
+}
+
+@keyframes pulse{
+0%,100%{
+transform:scale(1);
+box-shadow:0 10px 30px rgba(91,92,240,.3)
+}
+50%{
+transform:scale(1.08);
+box-shadow:0 15px 45px rgba(91,92,240,.55)
+}
+}
+
+/* MAIN */
+
+.hero{
+background:linear-gradient(135deg,#20265f,#5b5cf0);
+color:#fff;
+border-radius:26px;
+padding:28px;
+box-shadow:var(--shadow);
+margin-bottom:18px
+}
+
+.hero small{opacity:.75}
+
+.hero h2{
+font-size:32px;
+margin:7px 0
+}
+
+.hero p{
+margin:0 0 20px;
+opacity:.88
+}
+
+.next{
+background:rgba(255,255,255,.13);
+border:1px solid rgba(255,255,255,.18);
+border-radius:18px;
+padding:18px
+}
+
+.next strong{
+font-size:18px
+}
+
+.nextrow{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px
+}
+
+.next .btn{
+background:#fff;
+color:#272b70
+}
+
+.grid{
+display:grid;
+grid-template-columns:1.25fr .75fr;
+gap:18px
+}
+
+.card{
+background:var(--card);
+border:1px solid rgba(229,233,241,.8);
+border-radius:20px;
+padding:20px;
+box-shadow:var(--shadow);
+margin-bottom:18px
+}
+
+.card h3{
+margin:0 0 15px;
+font-size:18px
+}
+
+.sub{
+color:var(--muted);
+font-size:13px
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px
+}
+
+.stat{
+padding:15px;
+background:#f8f9fd;
+border-radius:15px
+}
+
+.stat b{
+display:block;
+font-size:23px
+}
+
+.stat span{
+font-size:12px;
+color:var(--muted)
+}
+
+.item{
+display:flex;
+align-items:center;
+gap:12px;
+padding:13px 0;
+border-bottom:1px solid var(--line)
+}
+
+.item:last-child{
+border-bottom:0
+}
+
+.check{
+width:23px;
+height:23px;
+border-radius:50%;
+border:2px solid #cbd2df;
+background:#fff;
+flex:none
+}
+
+.check.done{
+background:var(--good);
+border-color:var(--good);
+color:#fff
+}
+
+.itemmain{
+flex:1
+}
+
+.itemmain b{
+display:block
+}
+
+.itemmain small{
+color:var(--muted)
+}
+
+.tag{
+font-size:11px;
+padding:5px 8px;
+border-radius:20px;
+background:#eef0ff;
+color:#4d4dd0
+}
+
+.quick{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px
+}
+
+.quick button{
+padding:14px;
+border:1px dashed #cbd2df;
+background:#fafbff;
+border-radius:14px;
+text-align:left
+}
+
+.quick b{
+display:block
+}
+
+.quick span{
+font-size:12px;
+color:var(--muted)
+}
+
+.progress{
+height:9px;
+background:#edf0f5;
+border-radius:20px;
+overflow:hidden
+}
+
+.bar{
+height:100%;
+background:linear-gradient(90deg,var(--p),#9a70ff);
+border-radius:20px
+}
+
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(15,20,40,.55);
+padding:20px;
+z-index:10;
+align-items:center;
+justify-content:center
+}
+
+.modal.show{
+display:flex
+}
+
+.modalbox{
+width:min(600px,100%);
+max-height:90vh;
+overflow:auto;
+background:#fff;
+border-radius:24px;
+padding:22px
+}
+
+.form{
+display:grid;
+gap:12px
+}
+
+.row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px
+}
+
+label{
+font-size:12px;
+font-weight:700;
+color:#596274
+}
+
+input,textarea,select{
+width:100%;
+margin-top:6px;
+border:1px solid var(--line);
+border-radius:12px;
+padding:12px;
+background:#fff;
+color:var(--ink)
+}
+
+textarea{
+min-height:100px;
+resize:vertical
+}
+
+.actions{
+display:flex;
+justify-content:flex-end;
+gap:8px;
+margin-top:16px
+}
+
+.empty{
+text-align:center;
+padding:25px;
+color:var(--muted)
+}
+
+@media(max-width:800px){
+.grid{
+grid-template-columns:1fr
+}
+
+.hero h2{
+font-size:27px
+}
+
+.nextrow{
+align-items:flex-start;
+flex-direction:column
+}
+
+.stats{
+grid-template-columns:1fr 1fr
+}
+
+.row{
+grid-template-columns:1fr
+}
+
+header{
+align-items:flex-start
+}
+
+.top{
+flex-direction:column
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+
+<div class="brand">
+
+<div class="logo">✓</div>
+
+<div>
+<h1>LifePilot</h1>
+<p>Your personal AI life assistant.</p>
+</div>
+
+</div>
+
+<div class="top">
+
+<button class="btn ghost" onclick="openModal('quick')">
+＋ Add
+</button>
+
+<button class="btn primary" onclick="openModal('plan')">
+Plan my day
+</button>
+
+</div>
+
+</header>
+
+
+<!-- VOICE ASSISTANT -->
+
+<section class="voice-card">
+
+<div class="voice-orb" id="voiceOrb">
+🎙️
+</div>
+
+<div class="voice-status" id="voiceStatus">
+Ready when you are.
+</div>
+
+<h2>
+Talk to LifePilot.
+</h2>
+
+<p>
+Tell me what's happening in your life. Just talk naturally and I'll help organize the next step.
+</p>
+
+<button
+class="voice-btn"
+id="voiceButton"
+onclick="toggleVoice()">
+
+🎙️ Talk to LifePilot
+
+</button>
+
+<div class="transcript" id="transcript">
+Tap the microphone and just talk naturally.
+</div>
+
+<div class="voice-examples">
+
+<button onclick="useExample('I have a dentist appointment Friday at two.')">
+Dentist Friday at two
+</button>
+
+<button onclick="useExample('Remind me to change the oil in my truck next month.')">
+Truck oil next month
+</button>
+
+<button onclick="useExample('I have two hours free. What should I work on?')">
+What should I work on?
+</button>
+
+</div>
+
+</section>
+
+
+<!-- NEXT STEP -->
+
+<section class="hero">
+
+<small id="dateLine"></small>
+
+<h2 id="greeting">
+Good afternoon.
+</h2>
+
+<p>
+Let's make the next step simple.
+</p>
+
+<div class="next">
+
+<div class="nextrow">
+
+<div>
+
+<small>
+NEXT BEST STEP
+</small>
+
+<br>
+
+<strong id="nextTask">
+Add something you need to get done.
+</strong>
+
+<br>
+
+<small id="nextMeta">
+LifePilot will prioritize it for you.
+</small>
+
+</div>
+
+<button class="btn" onclick="completeNext()">
+✓ Done
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<div class="grid">
+
+<main>
+
+<section class="card">
+
+<h3>
+Today's plan
+</h3>
+
+<div id="taskList"></div>
+
+</section>
+
+
+<section class="card">
+
+<h3>
+Quick add
+</h3>
+
+<div class="quick">
+
+<button onclick="openModal('task')">
+📝
+<b>Task</b>
+<span>Something you need to do</span>
+</button>
+
+<button onclick="openModal('event')">
+📅
+<b>Event</b>
+<span>Appointment or commitment</span>
+</button>
+
+<button onclick="openModal('habit')">
+🔁
+<b>Habit</b>
+<span>Something you want to repeat</span>
+</button>
+
+<button onclick="openModal('goal')">
+🎯
+<b>Goal</b>
+<span>Something bigger you're working toward</span>
+</button>
+
+</div>
+
+</section>
+
+</main>
+
+
+<aside>
+
+<section class="card">
+
+<h3>
+Life at a glance
+</h3>
+
+<div class="stats">
+
+<div class="stat">
+<b id="openCount">0</b>
+<span>Things left</span>
+</div>
+
+<div class="stat">
+<b id="doneCount">0</b>
+<span>Completed</span>
+</div>
+
+<div class="stat">
+<b id="goalCount">0</b>
+<span>Goals</span>
+</div>
+
+</div>
+
+</section>
+
+
+<section class="card">
+
+<h3>
+Goals
+</h3>
+
+<div id="goalList"></div>
+
+</section>
+
+
+<section class="card">
+
+<h3>
+Tell LifePilot
+</h3>
+
+<p class="sub">
+Type naturally. No complicated forms required.
+</p>
+
+<textarea
+id="natural"
+placeholder="Example: I need to call the insurance company tomorrow, walk for 30 minutes, and finish the garage project this week.">
+</textarea>
+
+<button
+class="btn primary"
+style="width:100%;margin-top:10px"
+onclick="parseNatural()">
+
+Add to my life
+
+</button>
+
+</section>
+
+</aside>
+
+</div>
+
+</div>
+
+
+<div class="modal" id="modal">
+
+<div class="modalbox">
+
+<h2 id="modalTitle">
+Add something
+</h2>
+
+<div id="modalBody"></div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const KEY='lifepilot_v1';
+
+let data=JSON.parse(localStorage.getItem(KEY)||'null')||{
+
+tasks:[
+
+{
+id:1,
+title:'Welcome to LifePilot',
+meta:'Start by adding something you need to accomplish.',
+priority:2,
+done:false
+},
+
+{
+id:2,
+title:'Take a 15-minute walk',
+meta:'Health • 15 min',
+priority:1,
+done:false
+},
+
+{
+id:3,
+title:'Pick one important thing to finish today',
+meta:'Personal • 30 min',
+priority:2,
+done:false
+}
+
+],
+
+goals:[
+{
+id:1,
+title:'My first LifePilot goal',
+progress:0
+}
+]
+
+};
+
+
+function save(){
+
+localStorage.setItem(
+KEY,
+JSON.stringify(data)
+);
+
+render();
+
+}
+
+
+function esc(s){
+
+return String(s||'').replace(
+/[&<>"']/g,
+m=>({
+
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#039;'
+
+}[m])
+
+);
+
+}
+
+
+function render(){
+
+let open=data.tasks.filter(x=>!x.done);
+
+let done=data.tasks.filter(x=>x.done);
+
+document.getElementById('openCount').textContent=open.length;
+
+document.getElementById('doneCount').textContent=done.length;
+
+document.getElementById('goalCount').textContent=data.goals.length;
+
+
+document.getElementById('taskList').innerHTML=
+
+data.tasks.length?
+
+data.tasks.map(t=>`
+
+<div class="item">
+
+<button
+class="check ${t.done?'done':''}"
+onclick="toggle(${t.id})">
+
+${t.done?'✓':''}
+
+</button>
+
+<div class="itemmain">
+
+<b style="${t.done?'text-decoration:line-through;opacity:.55':''}">
+
+${esc(t.title)}
+
+</b>
+
+<small>
+${esc(t.meta||'')}
+</small>
+
+</div>
+
+<span class="tag">
+
+${t.priority==3?'High':t.priority==1?'Low':'Normal'}
+
+</span>
+
+</div>
+
+`).join('')
+
+:
+
+'<div class="empty">Nothing planned yet. Add your first task.</div>';
+
+
+let n=open.sort(
+(a,b)=>b.priority-a.priority
+)[0];
+
+
+document.getElementById('nextTask').textContent=
+
+n?n.title:'You are caught up. Nice work.';
+
+
+document.getElementById('nextMeta').textContent=
+
+n?
+(n.meta||''):
+'Add something new or enjoy the breathing room.';
+
+
+document.getElementById('goalList').innerHTML=
+
+data.goals.length?
+
+data.goals.map(g=>`
+
+<div style="margin-bottom:17px">
+
+<div style="display:flex;justify-content:space-between;margin-bottom:7px">
+
+<b>${esc(g.title)}</b>
+
+<span class="sub">
+${g.progress}%
+</span>
+
+</div>
+
+<div class="progress">
+
+<div
+class="bar"
+style="width:${Math.min(100,g.progress)}%">
+</div>
+
+</div>
+
+</div>
+
+`).join('')
+
+:
+
+'<div class="empty">No goals yet.</div>';
+
+
+let now=new Date();
+
+let h=now.getHours();
+
+
+document.getElementById('greeting').textContent=
+
+(h<12?
+'Good morning':
+h<18?
+'Good afternoon':
+'Good
