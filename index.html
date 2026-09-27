@@ -3,474 +3,678 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>LifePilot — Your Personal AI Assistant</title>
+<title>LifePilot — Your Personal Life Assistant</title>
 
 <style>
 :root{
---bg:#f5f7fb;
---card:#fff;
---ink:#172033;
---muted:#6d7688;
---line:#e5e9f1;
---p:#5b5cf0;
---p2:#7b61ff;
---good:#16a34a;
---shadow:0 10px 30px rgba(31,41,71,.08)
+  --green:#4CBB17;
+  --green-dark:#258900;
+  --green-light:#EAF8E4;
+  --green-pale:#F5FBF2;
+  --ink:#172018;
+  --muted:#68736a;
+  --line:#dfe8dc;
+  --card:#fff;
+  --bg:#f4f8f2;
+  --danger:#c62828;
+  --shadow:0 10px 30px rgba(35,70,30,.10)
 }
 
 *{box-sizing:border-box}
 
 body{
-margin:0;
-background:linear-gradient(135deg,#f7f8ff,#eef5ff);
-font-family:system-ui,-apple-system,Segoe UI,sans-serif;
-color:var(--ink)
+  margin:0;
+  background:linear-gradient(145deg,#f7fbf5,#edf6ea);
+  color:var(--ink);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
 }
 
 button,input,textarea,select{font:inherit}
 button{cursor:pointer}
 
 .app{
-max-width:1200px;
-margin:auto;
-padding:22px
+  max-width:1150px;
+  margin:auto;
+  padding:18px
 }
 
 header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:16px;
-margin-bottom:22px
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:18px
 }
 
 .brand{
-display:flex;
-align-items:center;
-gap:12px
+  display:flex;
+  align-items:center;
+  gap:11px
 }
 
 .logo{
-width:48px;
-height:48px;
-border-radius:15px;
-background:linear-gradient(135deg,var(--p),var(--p2));
-color:#fff;
-display:grid;
-place-items:center;
-font-size:24px;
-font-weight:800
+  width:48px;
+  height:48px;
+  border-radius:15px;
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:white;
+  display:grid;
+  place-items:center;
+  font-size:25px;
+  font-weight:900;
+  box-shadow:0 7px 18px rgba(76,187,23,.25)
 }
 
 .brand h1{
-font-size:22px;
-margin:0
+  margin:0;
+  font-size:21px
 }
 
 .brand p{
-margin:2px 0;
-color:var(--muted);
-font-size:13px
+  margin:2px 0 0;
+  color:var(--muted);
+  font-size:12px
 }
 
-.top{
-display:flex;
-gap:8px
+.header-buttons{
+  display:flex;
+  gap:7px
 }
 
 .btn{
-border:0;
-border-radius:12px;
-padding:11px 15px;
-background:#fff;
-color:var(--ink);
-box-shadow:0 3px 12px rgba(0,0,0,.06)
+  border:0;
+  border-radius:12px;
+  padding:11px 15px;
+  background:white;
+  color:var(--ink);
+  box-shadow:0 3px 12px rgba(0,0,0,.06)
 }
 
 .btn.primary{
-background:var(--p);
-color:#fff
+  background:var(--green);
+  color:white
 }
 
-.btn.ghost{
-box-shadow:none;
-border:1px solid var(--line)
+.btn.green-outline{
+  background:white;
+  color:var(--green-dark);
+  border:1px solid #b9d9ad;
+  box-shadow:none
 }
 
-/* VOICE ASSISTANT */
+/* WELCOME */
 
-.voice-card{
-background:#fff;
-border:1px solid rgba(229,233,241,.9);
-border-radius:26px;
-padding:28px 20px;
-margin-bottom:18px;
-box-shadow:var(--shadow);
-text-align:center
+.welcome{
+  background:linear-gradient(145deg,#193719,#318d17);
+  color:white;
+  border-radius:27px;
+  padding:30px 24px;
+  text-align:center;
+  box-shadow:var(--shadow);
+  margin-bottom:18px
 }
 
-.voice-card h2{
-margin:5px 0 8px;
-font-size:30px
+.welcome.hidden{display:none}
+
+.welcome-icon{
+  width:78px;
+  height:78px;
+  border-radius:25px;
+  background:rgba(255,255,255,.14);
+  margin:0 auto 14px;
+  display:grid;
+  place-items:center;
+  font-size:38px
 }
 
-.voice-card p{
-margin:0 auto 20px;
-color:var(--muted);
-max-width:600px
+.welcome h2{
+  font-size:29px;
+  margin:5px 0 9px
 }
 
-.voice-orb{
-width:105px;
-height:105px;
-border-radius:50%;
-margin:10px auto 15px;
-background:linear-gradient(135deg,var(--p),var(--p2));
-display:grid;
-place-items:center;
-color:#fff;
-font-size:42px;
-box-shadow:0 10px 30px rgba(91,92,240,.3)
+.welcome p{
+  max-width:650px;
+  margin:0 auto 20px;
+  opacity:.9;
+  line-height:1.5
 }
 
-.voice-orb.listening{
-animation:pulse 1.2s infinite
+.welcome-button{
+  border:0;
+  border-radius:15px;
+  padding:14px 22px;
+  background:white;
+  color:#236d12;
+  font-weight:800
 }
 
-.voice-status{
-font-size:14px;
-font-weight:700;
-color:var(--muted);
-min-height:22px;
-margin-bottom:12px
+/* PROFILE SETUP */
+
+.setup{
+  display:none;
+  background:white;
+  border:1px solid var(--line);
+  border-radius:25px;
+  padding:24px;
+  box-shadow:var(--shadow);
+  margin-bottom:18px
 }
 
-.voice-btn{
-border:0;
-border-radius:16px;
-padding:15px 25px;
-background:var(--p);
-color:#fff;
-font-weight:800;
-font-size:17px
+.setup.show{display:block}
+
+.setup h2{
+  margin:0 0 7px;
+  font-size:25px
 }
 
-.voice-btn.stop{
-background:#20265f
+.setup-intro{
+  color:var(--muted);
+  line-height:1.5;
+  margin-bottom:20px
 }
 
-.transcript{
-min-height:25px;
-margin:16px auto 0;
-padding:13px;
-border-radius:13px;
-background:#f7f8ff;
-color:var(--ink);
-max-width:700px
+.setup-step{
+  display:none
 }
 
-.voice-examples{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-gap:8px;
-margin-top:15px
+.setup-step.active{
+  display:block
 }
 
-.voice-examples button{
-border:1px solid var(--line);
-background:#fff;
-border-radius:20px;
-padding:9px 13px;
-color:#4d4dd0;
-font-size:12px
+.question{
+  font-size:21px;
+  font-weight:800;
+  margin-bottom:8px
+}
+
+.question-help{
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:15px;
+  line-height:1.5
+}
+
+.example-box{
+  background:var(--green-pale);
+  border:1px solid #d8edd0;
+  border-radius:15px;
+  padding:14px;
+  margin:12px 0 16px
+}
+
+.example-box strong{
+  color:var(--green-dark)
+}
+
+.example-box div{
+  margin-top:7px;
+  color:#536052;
+  font-size:13px;
+  line-height:1.5
+}
+
+.setup input,
+.setup textarea,
+.setup select{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:13px;
+  outline:none;
+  background:white;
+  color:var(--ink)
+}
+
+.setup input:focus,
+.setup textarea:focus,
+.setup select:focus{
+  border-color:var(--green)
+}
+
+.setup-actions{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:18px
+}
+
+.skip{
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  padding:10px
+}
+
+.progress-text{
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:7px
+}
+
+.progress-track{
+  height:7px;
+  border-radius:20px;
+  background:#e9efe6;
+  overflow:hidden;
+  margin-bottom:22px
+}
+
+.progress-fill{
+  height:100%;
+  width:0;
+  background:var(--green);
+  transition:.25s
+}
+
+/* ASSISTANT */
+
+.assistant{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:25px;
+  padding:25px 20px;
+  text-align:center;
+  box-shadow:var(--shadow);
+  margin-bottom:18px
+}
+
+.assistant-orb{
+  width:96px;
+  height:96px;
+  margin:0 auto 12px;
+  border-radius:50%;
+  background:linear-gradient(145deg,var(--green),var(--green-dark));
+  color:white;
+  display:grid;
+  place-items:center;
+  font-size:39px;
+  box-shadow:0 10px 30px rgba(76,187,23,.28)
+}
+
+.assistant-orb.listening{
+  animation:pulse 1.15s infinite
 }
 
 @keyframes pulse{
-0%,100%{
-transform:scale(1);
-box-shadow:0 10px 30px rgba(91,92,240,.3)
-}
-50%{
-transform:scale(1.08);
-box-shadow:0 15px 45px rgba(91,92,240,.55)
-}
+  50%{
+    transform:scale(1.07);
+    box-shadow:0 15px 45px rgba(76,187,23,.5)
+  }
 }
 
-/* MAIN */
-
-.hero{
-background:linear-gradient(135deg,#20265f,#5b5cf0);
-color:#fff;
-border-radius:26px;
-padding:28px;
-box-shadow:var(--shadow);
-margin-bottom:18px
+.assistant h2{
+  margin:4px 0 6px;
+  font-size:27px
 }
 
-.hero small{opacity:.75}
-
-.hero h2{
-font-size:32px;
-margin:7px 0
+.assistant p{
+  color:var(--muted);
+  max-width:650px;
+  margin:0 auto 17px;
+  line-height:1.45
 }
 
-.hero p{
-margin:0 0 20px;
-opacity:.88
+.status{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:700;
+  min-height:20px
 }
 
-.next{
-background:rgba(255,255,255,.13);
-border:1px solid rgba(255,255,255,.18);
-border-radius:18px;
-padding:18px
+.voice-button{
+  border:0;
+  border-radius:16px;
+  padding:15px 24px;
+  background:var(--green);
+  color:white;
+  font-size:16px;
+  font-weight:800
 }
 
-.next strong{
-font-size:18px
+.voice-button.stop{
+  background:#24551a
 }
 
-.nextrow{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:15px
+.transcript{
+  margin:14px auto 0;
+  padding:12px;
+  border-radius:13px;
+  background:var(--green-pale);
+  max-width:700px;
+  min-height:24px
 }
 
-.next .btn{
-background:#fff;
-color:#272b70
+.examples{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:7px;
+  margin-top:13px
 }
+
+.examples button{
+  border:1px solid #cce1c5;
+  background:white;
+  color:var(--green-dark);
+  border-radius:20px;
+  padding:8px 11px;
+  font-size:12px
+}
+
+/* MISSION */
+
+.mission{
+  background:linear-gradient(145deg,#193719,#3d9e1e);
+  color:white;
+  border-radius:27px;
+  padding:26px;
+  margin-bottom:18px;
+  box-shadow:var(--shadow)
+}
+
+.mission-label{
+  font-size:12px;
+  letter-spacing:.12em;
+  opacity:.75;
+  font-weight:800
+}
+
+.mission h2{
+  font-size:29px;
+  margin:7px 0
+}
+
+.mission p{
+  opacity:.88;
+  line-height:1.45
+}
+
+.mission-box{
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:18px;
+  padding:18px;
+  margin-top:15px
+}
+
+.mission-title{
+  font-size:21px;
+  font-weight:800;
+  margin-bottom:6px
+}
+
+.mission-meta{
+  font-size:13px;
+  opacity:.78
+}
+
+.mission-actions{
+  display:flex;
+  gap:8px;
+  margin-top:15px;
+  flex-wrap:wrap
+}
+
+.mission-actions button{
+  border:0;
+  border-radius:12px;
+  padding:11px 15px;
+  font-weight:700
+}
+
+.mission-done{
+  background:white;
+  color:#246c13
+}
+
+.mission-new{
+  background:rgba(255,255,255,.13);
+  color:white;
+  border:1px solid rgba(255,255,255,.3)!important
+}
+
+/* GRID */
 
 .grid{
-display:grid;
-grid-template-columns:1.25fr .75fr;
-gap:18px
+  display:grid;
+  grid-template-columns:1.25fr .75fr;
+  gap:18px
 }
 
 .card{
-background:var(--card);
-border:1px solid rgba(229,233,241,.8);
-border-radius:20px;
-padding:20px;
-box-shadow:var(--shadow);
-margin-bottom:18px
+  background:white;
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:var(--shadow);
+  margin-bottom:18px
 }
 
 .card h3{
-margin:0 0 15px;
-font-size:18px
-}
-
-.sub{
-color:var(--muted);
-font-size:13px
-}
-
-.stats{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px
-}
-
-.stat{
-padding:15px;
-background:#f8f9fd;
-border-radius:15px
-}
-
-.stat b{
-display:block;
-font-size:23px
-}
-
-.stat span{
-font-size:12px;
-color:var(--muted)
+  margin:0 0 15px;
+  font-size:18px
 }
 
 .item{
-display:flex;
-align-items:center;
-gap:12px;
-padding:13px 0;
-border-bottom:1px solid var(--line)
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:13px 0;
+  border-bottom:1px solid var(--line)
 }
 
-.item:last-child{
-border-bottom:0
-}
+.item:last-child{border-bottom:0}
 
 .check{
-width:23px;
-height:23px;
-border-radius:50%;
-border:2px solid #cbd2df;
-background:#fff;
-flex:none
+  width:23px;
+  height:23px;
+  border-radius:50%;
+  border:2px solid #c6d0c3;
+  background:white;
+  flex:none
 }
 
 .check.done{
-background:var(--good);
-border-color:var(--good);
-color:#fff
+  background:var(--green);
+  border-color:var(--green);
+  color:white
 }
 
-.itemmain{
-flex:1
+.item-main{
+  flex:1
 }
 
-.itemmain b{
-display:block
+.item-main b{
+  display:block
 }
 
-.itemmain small{
-color:var(--muted)
+.item-main small{
+  color:var(--muted)
 }
 
 .tag{
-font-size:11px;
-padding:5px 8px;
-border-radius:20px;
-background:#eef0ff;
-color:#4d4dd0
-}
-
-.quick{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px
-}
-
-.quick button{
-padding:14px;
-border:1px dashed #cbd2df;
-background:#fafbff;
-border-radius:14px;
-text-align:left
-}
-
-.quick b{
-display:block
-}
-
-.quick span{
-font-size:12px;
-color:var(--muted)
-}
-
-.progress{
-height:9px;
-background:#edf0f5;
-border-radius:20px;
-overflow:hidden
-}
-
-.bar{
-height:100%;
-background:linear-gradient(90deg,var(--p),#9a70ff);
-border-radius:20px
-}
-
-.modal{
-display:none;
-position:fixed;
-inset:0;
-background:rgba(15,20,40,.55);
-padding:20px;
-z-index:10;
-align-items:center;
-justify-content:center
-}
-
-.modal.show{
-display:flex
-}
-
-.modalbox{
-width:min(600px,100%);
-max-height:90vh;
-overflow:auto;
-background:#fff;
-border-radius:24px;
-padding:22px
-}
-
-.form{
-display:grid;
-gap:12px
-}
-
-.row{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px
-}
-
-label{
-font-size:12px;
-font-weight:700;
-color:#596274
-}
-
-input,textarea,select{
-width:100%;
-margin-top:6px;
-border:1px solid var(--line);
-border-radius:12px;
-padding:12px;
-background:#fff;
-color:var(--ink)
-}
-
-textarea{
-min-height:100px;
-resize:vertical
-}
-
-.actions{
-display:flex;
-justify-content:flex-end;
-gap:8px;
-margin-top:16px
-}
-
-.empty{
-text-align:center;
-padding:25px;
-color:var(--muted)
-}
-
-@media(max-width:800px){
-.grid{
-grid-template-columns:1fr
-}
-
-.hero h2{
-font-size:27px
-}
-
-.nextrow{
-align-items:flex-start;
-flex-direction:column
+  font-size:11px;
+  padding:5px 8px;
+  border-radius:20px;
+  background:var(--green-light);
+  color:var(--green-dark)
 }
 
 .stats{
-grid-template-columns:1fr 1fr
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px
 }
 
-.row{
-grid-template-columns:1fr
+.stat{
+  background:var(--green-pale);
+  border-radius:14px;
+  padding:14px
 }
 
-header{
-align-items:flex-start
+.stat b{
+  display:block;
+  font-size:23px
 }
 
-.top{
-flex-direction:column
+.stat span{
+  color:var(--muted);
+  font-size:12px
 }
+
+.quick{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px
+}
+
+.quick button{
+  border:1px dashed #c9dbc4;
+  background:#fbfdfb;
+  border-radius:14px;
+  padding:13px;
+  text-align:left
+}
+
+.quick b{
+  display:block
+}
+
+.quick span{
+  color:var(--muted);
+  font-size:12px
+}
+
+.goal{
+  margin-bottom:17px
+}
+
+.goal-head{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:7px
+}
+
+.progress{
+  height:8px;
+  background:#e9efe6;
+  border-radius:20px;
+  overflow:hidden
+}
+
+.bar{
+  height:100%;
+  background:var(--green);
+  border-radius:20px
+}
+
+.sub{
+  color:var(--muted);
+  font-size:13px
+}
+
+/* SETTINGS */
+
+.settings{
+  display:none
+}
+
+.settings.show{
+  display:block
+}
+
+.profile-row{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:11px 0;
+  border-bottom:1px solid var(--line)
+}
+
+.profile-row:last-child{
+  border-bottom:0
+}
+
+.profile-value{
+  color:var(--muted);
+  text-align:right
+}
+
+/* MODAL */
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(15,25,15,.55);
+  z-index:20;
+  align-items:center;
+  justify-content:center;
+  padding:18px
+}
+
+.modal.show{
+  display:flex
+}
+
+.modal-box{
+  width:min(600px,100%);
+  max-height:90vh;
+  overflow:auto;
+  background:white;
+  border-radius:24px;
+  padding:22px
+}
+
+.modal-box h2{
+  margin-top:0
+}
+
+.modal-box input,
+.modal-box textarea,
+.modal-box select{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px;
+  margin-top:6px
+}
+
+.form{
+  display:grid;
+  gap:12px
+}
+
+label{
+  color:#526052;
+  font-size:12px;
+  font-weight:700
+}
+
+.actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  margin-top:10px
+}
+
+.empty{
+  text-align:center;
+  padding:25px;
+  color:var(--muted)
+}
+
+@media(max-width:800px){
+  .grid{grid-template-columns:1fr}
+  .header-buttons{flex-wrap:wrap}
+  .top{display:none}
+  .stats{grid-template-columns:1fr 1fr}
+}
+
+@media(max-width:520px){
+  .app{padding:12px}
+  .welcome h2,.mission h2{font-size:25px}
+  .assistant h2{font-size:24px}
 }
 </style>
 </head>
@@ -482,75 +686,377 @@ flex-direction:column
 <header>
 
 <div class="brand">
-
 <div class="logo">✓</div>
-
 <div>
-<h1>LifePilot</h1>
-<p>Your personal AI life assistant.</p>
+<h1 id="brandName">LifePilot</h1>
+<p id="brandSubtitle">Your personal life assistant.</p>
+</div>
 </div>
 
-</div>
-
-<div class="top">
-
-<button class="btn ghost" onclick="openModal('quick')">
-＋ Add
-</button>
-
-<button class="btn primary" onclick="openModal('plan')">
-Plan my day
-</button>
-
+<div class="header-buttons">
+<button class="btn green-outline" onclick="showSettings()">⚙ Settings</button>
+<button class="btn primary" onclick="openModal('quick')">＋ Add</button>
 </div>
 
 </header>
 
 
-<!-- VOICE ASSISTANT -->
+<!-- FIRST WELCOME -->
 
-<section class="voice-card">
+<section class="welcome" id="welcome">
 
-<div class="voice-orb" id="voiceOrb">
+<div class="welcome-icon">🧭</div>
+
+<h2 id="welcomeTitle">Hi! I'm your new LifePilot.</h2>
+
+<p id="welcomeText">
+I'm here to help you organize your life, remember the things you don't want to forget, and help you decide what to do next.
+You don't have to manage me. Just tell me what's going on and I'll help.
+</p>
+
+<button class="welcome-button" onclick="startSetup()">
+Let's get acquainted
+</button>
+
+</section>
+
+
+<!-- PROFILE SETUP -->
+
+<section class="setup" id="setup">
+
+<h2>Let's get to know each other.</h2>
+
+<div class="setup-intro">
+You can answer as much or as little as you want. Nothing here is required.
+The more you tell me, the more useful I can become.
+</div>
+
+<div class="progress-text" id="progressText">Question 1 of 9</div>
+
+<div class="progress-track">
+<div class="progress-fill" id="progressFill"></div>
+</div>
+
+
+<!-- STEP 1 -->
+
+<div class="setup-step active" data-step="1">
+
+<div class="question">
+What should I call you?
+</div>
+
+<div class="question-help">
+Your first name, nickname, or whatever you prefer.
+</div>
+
+<div class="example-box">
+<strong>Examples</strong>
+<div>
+“Brad” · “Sam” · “Mom” · “Captain” · “Whatever you want to call me.”
+</div>
+</div>
+
+<input id="profileName" placeholder="What should I call you?">
+
+</div>
+
+
+<!-- STEP 2 -->
+
+<div class="setup-step" data-step="2">
+
+<div class="question">
+What would you like to call me?
+</div>
+
+<div class="question-help">
+You can keep “LifePilot” or give me a name that feels more personal.
+You can change it anytime in Settings.
+</div>
+
+<div class="example-box">
+<strong>Ideas</strong>
+<div>
+“Atlas” · “Scout” · “Friday” · “Jarvis” · “Milo” · “Coach” · “Ace” · “Something completely ridiculous.”
+</div>
+</div>
+
+<input id="assistantName" placeholder="Give your LifePilot a name">
+
+</div>
+
+
+<!-- STEP 3 -->
+
+<div class="setup-step" data-step="3">
+
+<div class="question">
+When is your birthday?
+</div>
+
+<div class="question-help">
+Optional. This can help with age, birthdays, planning, reminders, and age-related recommendations.
+</div>
+
+<div class="example-box">
+<strong>Example</strong>
+<div>
+“March 14, 1985”
+</div>
+</div>
+
+<input id="birthday" type="date">
+
+</div>
+
+
+<!-- STEP 4 -->
+
+<div class="setup-step" data-step="4">
+
+<div class="question">
+Tell me a little about your body and clothing sizes.
+</div>
+
+<div class="question-help">
+Optional. This can eventually help with health planning and things like ordering clothes online.
+</div>
+
+<div class="example-box">
+<strong>Examples</strong>
+<div>
+Height: “5'10”” · Weight: “180 lb” · Shirt: “XL” · Pants: “34x32” · Shoes: “11”
+</div>
+</div>
+
+<input id="height" placeholder="Height — example: 5'10&quot;">
+
+<br><br>
+
+<input id="weight" placeholder="Weight — example: 180 lb">
+
+<br><br>
+
+<input id="shirt" placeholder="Shirt size — example: XL">
+
+<br><br>
+
+<input id="pants" placeholder="Pants size — example: 34x32">
+
+<br><br>
+
+<input id="shoes" placeholder="Shoe size — example: 11">
+
+</div>
+
+
+<!-- STEP 5 -->
+
+<div class="setup-step" data-step="5">
+
+<div class="question">
+What kind of life are you trying to build?
+</div>
+
+<div class="question-help">
+Don't worry about sounding impressive. Think about what would make your actual life better.
+</div>
+
+<div class="example-box">
+<strong>Ideas to get your brain moving</strong>
+<div>
+“Have more free time.”<br>
+“Finish my truck project.”<br>
+“Take my kids camping.”<br>
+“Stop living paycheck to paycheck.”<br>
+“Get my garage under control.”<br>
+“Learn something I've always been curious about.”<br>
+“Travel somewhere I've never been.”<br>
+“Be healthier without making my whole life about exercise.”
+</div>
+</div>
+
+<textarea id="lifeVision" placeholder="Tell me anything that comes to mind..."></textarea>
+
+</div>
+
+
+<!-- STEP 6 -->
+
+<div class="setup-step" data-step="6">
+
+<div class="question">
+What are some goals you'd actually enjoy accomplishing?
+</div>
+
+<div class="question-help">
+You don't need ten goals. One meaningful goal is enough.
+</div>
+
+<div class="example-box">
+<strong>Try thinking smaller and more specifically</strong>
+<div>
+Instead of “save money” → “save my first $500 emergency fund.”<br>
+Instead of “get fit” → “walk 20 minutes three times this week.”<br>
+Instead of “clean the house” → “finally clean out the garage shelves.”<br>
+Instead of “learn guitar” → “learn three songs I can actually play.”
+</div>
+</div>
+
+<textarea id="goals" placeholder="Goals, dreams, projects, adventures, improvements..."></textarea>
+
+</div>
+
+
+<!-- STEP 7 -->
+
+<div class="setup-step" data-step="7">
+
+<div class="question">
+What should I know about your normal life?
+</div>
+
+<div class="question-help">
+Anything that affects what you can realistically accomplish.
+</div>
+
+<div class="example-box">
+<strong>Examples</strong>
+<div>
+“I work Monday through Friday, 8–5.”<br>
+“I work nights.”<br>
+“I have kids every other week.”<br>
+“Saturday mornings are usually free.”<br>
+“I hate mornings.”<br>
+“I have the most energy after lunch.”
+</div>
+</div>
+
+<textarea id="schedule" placeholder="Tell me about work, family, energy, routines, or anything else that matters..."></textarea>
+
+</div>
+
+
+<!-- STEP 8 -->
+
+<div class="setup-step" data-step="8">
+
+<div class="question">
+What do you want help remembering?
+</div>
+
+<div class="question-help">
+This can be anything you repeatedly forget, avoid, or wish someone would keep track of.
+</div>
+
+<div class="example-box">
+<strong>Examples</strong>
+<div>
+“Oil changes.”<br>
+“Mom's birthday.”<br>
+“Renew my insurance.”<br>
+“Follow up with customers.”<br>
+“Water the plants.”<br>
+“Things I promise people I'll do.”
+</div>
+</div>
+
+<textarea id="remember" placeholder="Things you don't want falling through the cracks..."></textarea>
+
+</div>
+
+
+<!-- STEP 9 -->
+
+<div class="setup-step" data-step="9">
+
+<div class="question">
+What would make LifePilot genuinely useful to you?
+</div>
+
+<div class="question-help">
+This is your chance to tell me what you wish an assistant could actually do.
+</div>
+
+<div class="example-box">
+<strong>Examples</strong>
+<div>
+“Tell me what I should be doing right now.”<br>
+“Keep me from forgetting appointments.”<br>
+“Help me get my finances organized.”<br>
+“Plan my weekends.”<br>
+“Help me stay on top of my projects.”<br>
+“Remember everything so I don't have to.”
+</div>
+</div>
+
+<textarea id="useful" placeholder="What would make you say, 'Holy crap, this thing is useful'?"></textarea>
+
+</div>
+
+
+<div class="setup-actions">
+
+<button class="skip" onclick="skipSetup()">
+Skip
+</button>
+
+<div>
+<button class="btn green-outline" id="backButton" onclick="previousStep()" style="display:none">
+Back
+</button>
+
+<button class="btn primary" onclick="nextStep()" id="nextButton">
+Next
+</button>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ASSISTANT -->
+
+<section class="assistant">
+
+<div class="assistant-orb" id="assistantOrb">
 🎙️
 </div>
 
-<div class="voice-status" id="voiceStatus">
+<div class="status" id="status">
 Ready when you are.
 </div>
 
-<h2>
+<h2 id="assistantHeading">
 Talk to LifePilot.
 </h2>
 
-<p>
-Tell me what's happening in your life. Just talk naturally and I'll help organize the next step.
+<p id="assistantDescription">
+Tell me what's happening in your life. You don't need to organize it first. Just tell me what's going on.
 </p>
 
-<button
-class="voice-btn"
-id="voiceButton"
-onclick="toggleVoice()">
-
+<button class="voice-button" id="voiceButton" onclick="toggleVoice()">
 🎙️ Talk to LifePilot
-
 </button>
 
 <div class="transcript" id="transcript">
-Tap the microphone and just talk naturally.
+Tap the microphone and talk naturally.
 </div>
 
-<div class="voice-examples">
+<div class="examples">
 
-<button onclick="useExample('I have a dentist appointment Friday at two.')">
+<button onclick="exampleCommand('I have a dentist appointment Friday at two.')">
 Dentist Friday at two
 </button>
 
-<button onclick="useExample('Remind me to change the oil in my truck next month.')">
+<button onclick="exampleCommand('Remind me to change the oil in my truck next month.')">
 Truck oil next month
 </button>
 
-<button onclick="useExample('I have two hours free. What should I work on?')">
+<button onclick="exampleCommand('What should I work on right now?')">
 What should I work on?
 </button>
 
@@ -559,46 +1065,41 @@ What should I work on?
 </section>
 
 
-<!-- NEXT STEP -->
+<!-- DAILY MISSION -->
 
-<section class="hero">
+<section class="mission">
 
-<small id="dateLine"></small>
+<div class="mission-label">
+YOUR 18-HOUR MISSION
+</div>
 
-<h2 id="greeting">
-Good afternoon.
+<h2>
+One thing that matters today.
 </h2>
 
 <p>
-Let's make the next step simple.
+You don't have to conquer your entire life today.
+LifePilot will help you identify one meaningful thing that should happen before your day is over.
 </p>
 
-<div class="next">
+<div class="mission-box">
 
-<div class="nextrow">
-
-<div>
-
-<small>
-NEXT BEST STEP
-</small>
-
-<br>
-
-<strong id="nextTask">
-Add something you need to get done.
-</strong>
-
-<br>
-
-<small id="nextMeta">
-LifePilot will prioritize it for you.
-</small>
-
+<div class="mission-title" id="missionTitle">
+Your first mission will appear here.
 </div>
 
-<button class="btn" onclick="completeNext()">
-✓ Done
+<div class="mission-meta" id="missionMeta">
+Complete one meaningful action before the end of your day.
+</div>
+
+<div class="mission-actions">
+
+<button class="mission-done" onclick="completeMission()">
+✓ Mission Complete
+</button>
+
+<button class="mission-new" onclick="generateMission()">
+Give Me Another
 </button>
 
 </div>
@@ -608,15 +1109,15 @@ LifePilot will prioritize it for you.
 </section>
 
 
+<!-- MAIN -->
+
 <div class="grid">
 
 <main>
 
 <section class="card">
 
-<h3>
-Today's plan
-</h3>
+<h3>Today's plan</h3>
 
 <div id="taskList"></div>
 
@@ -625,9 +1126,7 @@ Today's plan
 
 <section class="card">
 
-<h3>
-Quick add
-</h3>
+<h3>Quick add</h3>
 
 <div class="quick">
 
@@ -666,9 +1165,7 @@ Quick add
 
 <section class="card">
 
-<h3>
-Life at a glance
-</h3>
+<h3>Life at a glance</h3>
 
 <div class="stats">
 
@@ -694,9 +1191,7 @@ Life at a glance
 
 <section class="card">
 
-<h3>
-Goals
-</h3>
+<h3>Goals</h3>
 
 <div id="goalList"></div>
 
@@ -705,27 +1200,13 @@ Goals
 
 <section class="card">
 
-<h3>
-Tell LifePilot
-</h3>
+<h3>Things LifePilot knows</h3>
 
-<p class="sub">
-Type naturally. No complicated forms required.
-</p>
-
-<textarea
-id="natural"
-placeholder="Example: I need to call the insurance company tomorrow, walk for 30 minutes, and finish the garage project this week.">
-</textarea>
-
-<button
-class="btn primary"
-style="width:100%;margin-top:10px"
-onclick="parseNatural()">
-
-Add to my life
-
-</button>
+<div id="profileSummary">
+<div class="empty">
+Complete your introduction and I'll start learning.
+</div>
+</div>
 
 </section>
 
@@ -733,12 +1214,40 @@ Add to my life
 
 </div>
 
+
+<!-- SETTINGS -->
+
+<section class="card settings" id="settings">
+
+<h3>⚙ LifePilot Settings</h3>
+
+<p class="sub">
+Change your name, my name, or anything else you've told me.
+</p>
+
+<div id="settingsProfile"></div>
+
+<br>
+
+<button class="btn primary" onclick="startSetupFromSettings()">
+Edit my information
+</button>
+
+<button class="btn green-outline" onclick="hideSettings()">
+Close
+</button>
+
+</section>
+
+
 </div>
 
 
+<!-- MODAL -->
+
 <div class="modal" id="modal">
 
-<div class="modalbox">
+<div class="modal-box">
 
 <h2 id="modalTitle">
 Add something
@@ -753,53 +1262,56 @@ Add something
 
 <script>
 
-const KEY='lifepilot_v1';
+/* =========================================
+DATA
+========================================= */
 
-let data=JSON.parse(localStorage.getItem(KEY)||'null')||{
+const PROFILE_KEY='lifepilot_profile_v2';
+const DATA_KEY='lifepilot_data_v2';
+
+let profile=JSON.parse(
+localStorage.getItem(PROFILE_KEY)||'null'
+);
+
+let data=JSON.parse(
+localStorage.getItem(DATA_KEY)||'null'
+)||{
 
 tasks:[
-
 {
 id:1,
-title:'Welcome to LifePilot',
-meta:'Start by adding something you need to accomplish.',
-priority:2,
-done:false
-},
-
-{
-id:2,
-title:'Take a 15-minute walk',
-meta:'Health • 15 min',
-priority:1,
-done:false
-},
-
-{
-id:3,
-title:'Pick one important thing to finish today',
-meta:'Personal • 30 min',
-priority:2,
+title:'Explore LifePilot',
+meta:'Start by telling me what is going on in your life.',
+priority:3,
 done:false
 }
-
 ],
 
-goals:[
-{
-id:1,
-title:'My first LifePilot goal',
-progress:0
-}
-]
+goals:[],
+
+mission:null
 
 };
 
 
-function save(){
+/* =========================================
+SAVE
+========================================= */
+
+function saveProfile(){
 
 localStorage.setItem(
-KEY,
+PROFILE_KEY,
+JSON.stringify(profile)
+);
+
+}
+
+
+function saveData(){
+
+localStorage.setItem(
+DATA_KEY,
 JSON.stringify(data)
 );
 
@@ -808,60 +1320,527 @@ render();
 }
 
 
-function esc(s){
+/* =========================================
+ESCAPE HTML
+========================================= */
 
-return String(s||'').replace(
-/[&<>"']/g,
-m=>({
+function esc(value){
 
+return String(value||'')
+.replace(/[&<>"']/g,function(m){
+
+return {
 '&':'&amp;',
 '<':'&lt;',
 '>':'&gt;',
 '"':'&quot;',
 "'":'&#039;'
+}[m];
 
-}[m])
-
-);
+});
 
 }
 
 
+/* =========================================
+WELCOME
+========================================= */
+
+function startSetup(){
+
+document.getElementById('welcome')
+.classList.add('hidden');
+
+document.getElementById('setup')
+.classList.add('show');
+
+setupStep=1;
+
+showStep();
+
+}
+
+
+function skipSetup(){
+
+profile=profile||{};
+
+profile.setupComplete=true;
+
+saveProfile();
+
+document.getElementById('setup')
+.classList.remove('show');
+
+updateIdentity();
+
+generateMission();
+
+}
+
+
+let setupStep=1;
+
+
+function showStep(){
+
+document.querySelectorAll('.setup-step')
+.forEach(function(step){
+
+step.classList.remove('active');
+
+});
+
+
+const current=document.querySelector(
+'.setup-step[data-step="'+setupStep+'"]'
+);
+
+if(current)
+current.classList.add('active');
+
+
+document.getElementById('progressText')
+.textContent=
+'Question '+setupStep+' of 9';
+
+
+document.getElementById('progressFill')
+.style.width=
+((setupStep/9)*100)+'%';
+
+
+document.getElementById('backButton')
+.style.display=
+setupStep>1?'inline-block':'none';
+
+
+document.getElementById('nextButton')
+.textContent=
+setupStep===9?'Finish':'Next';
+
+}
+
+
+function collectProfile(){
+
+profile=profile||{};
+
+profile.name=
+document.getElementById('profileName').value.trim();
+
+profile.assistantName=
+document.getElementById('assistantName').value.trim();
+
+profile.birthday=
+document.getElementById('birthday').value;
+
+profile.height=
+document.getElementById('height').value.trim();
+
+profile.weight=
+document.getElementById('weight').value.trim();
+
+profile.shirt=
+document.getElementById('shirt').value.trim();
+
+profile.pants=
+document.getElementById('pants').value.trim();
+
+profile.shoes=
+document.getElementById('shoes').value.trim();
+
+profile.lifeVision=
+document.getElementById('lifeVision').value.trim();
+
+profile.goals=
+document.getElementById('goals').value.trim();
+
+profile.schedule=
+document.getElementById('schedule').value.trim();
+
+profile.remember=
+document.getElementById('remember').value.trim();
+
+profile.useful=
+document.getElementById('useful').value.trim();
+
+}
+
+
+function nextStep(){
+
+collectProfile();
+
+if(setupStep<9){
+
+setupStep++;
+
+showStep();
+
+}
+else{
+
+profile.setupComplete=true;
+
+saveProfile();
+
+document.getElementById('setup')
+.classList.remove('show');
+
+updateIdentity();
+
+generateMission();
+
+}
+
+}
+
+
+function previousStep(){
+
+collectProfile();
+
+if(setupStep>1){
+
+setupStep--;
+
+showStep();
+
+}
+
+}
+
+
+function startSetupFromSettings(){
+
+hideSettings();
+
+document.getElementById('setup')
+.classList.add('show');
+
+loadProfileIntoForm();
+
+setupStep=1;
+
+showStep();
+
+}
+
+
+function loadProfileIntoForm(){
+
+if(!profile)return;
+
+document.getElementById('profileName').value=
+profile.name||'';
+
+document.getElementById('assistantName').value=
+profile.assistantName||'';
+
+document.getElementById('birthday').value=
+profile.birthday||'';
+
+document.getElementById('height').value=
+profile.height||'';
+
+document.getElementById('weight').value=
+profile.weight||'';
+
+document.getElementById('shirt').value=
+profile.shirt||'';
+
+document.getElementById('pants').value=
+profile.pants||'';
+
+document.getElementById('shoes').value=
+profile.shoes||'';
+
+document.getElementById('lifeVision').value=
+profile.lifeVision||'';
+
+document.getElementById('goals').value=
+profile.goals||'';
+
+document.getElementById('schedule').value=
+profile.schedule||'';
+
+document.getElementById('remember').value=
+profile.remember||'';
+
+document.getElementById('useful').value=
+profile.useful||'';
+
+}
+
+
+/* =========================================
+IDENTITY
+========================================= */
+
+function assistantName(){
+
+return profile&&profile.assistantName?
+profile.assistantName:
+'LifePilot';
+
+}
+
+
+function userName(){
+
+return profile&&profile.name?
+profile.name:
+'there';
+
+}
+
+
+function updateIdentity(){
+
+const a=assistantName();
+
+document.getElementById('brandName')
+.textContent=a;
+
+document.getElementById('brandSubtitle')
+.textContent=
+'Your personal life assistant.';
+
+document.getElementById('assistantHeading')
+.textContent=
+'Talk to '+a+'.';
+
+document.getElementById('assistantDescription')
+.textContent=
+'Tell me what is happening in your life. You do not need to organize it first.';
+
+if(profile&&profile.name){
+
+document.getElementById('welcomeTitle')
+.textContent=
+'Good to meet you, '+profile.name+'.';
+
+}
+
+renderProfileSummary();
+
+}
+
+
+/* =========================================
+PROFILE SUMMARY
+========================================= */
+
+function renderProfileSummary(){
+
+const box=
+document.getElementById('profileSummary');
+
+if(!profile||!profile.setupComplete){
+
+box.innerHTML=
+'<div class="empty">Tell me about yourself and I will remember the things you choose to share.</div>';
+
+return;
+
+}
+
+let rows=[];
+
+if(profile.name)
+rows.push(['You',' '+esc(profile.name)]);
+
+if(profile.assistantName)
+rows.push(['My name',' '+esc(profile.assistantName)]);
+
+if(profile.birthday)
+rows.push(['Birthday',esc(profile.birthday)]);
+
+if(profile.height)
+rows.push(['Height',esc(profile.height)]);
+
+if(profile.weight)
+rows.push(['Weight',esc(profile.weight)]);
+
+if(profile.shirt)
+rows.push(['Shirt',esc(profile.shirt)]);
+
+if(profile.pants)
+rows.push(['Pants',esc(profile.pants)]);
+
+if(profile.shoes)
+rows.push(['Shoes',esc(profile.shoes)]);
+
+box.innerHTML=rows.length?
+
+rows.map(function(r){
+
+return `
+<div class="profile-row">
+<b>${r[0]}</b>
+<span class="profile-value">${r[1]}</span>
+</div>`;
+
+}).join(''):
+
+'<div class="empty">You chose to keep your profile private for now.</div>';
+
+}
+
+
+/* =========================================
+SETTINGS
+========================================= */
+
+function showSettings(){
+
+document.getElementById('settings')
+.classList.add('show');
+
+document.getElementById('settingsProfile')
+.innerHTML=
+document.getElementById('profileSummary')
+.innerHTML;
+
+document.getElementById('settings')
+.scrollIntoView({
+behavior:'smooth'
+});
+
+}
+
+
+function hideSettings(){
+
+document.getElementById('settings')
+.classList.remove('show');
+
+}
+
+
+/* =========================================
+MISSIONS
+========================================= */
+
+function generateMission(){
+
+const open=data.tasks
+.filter(function(t){
+return !t.done;
+})
+.sort(function(a,b){
+return b.priority-a.priority;
+});
+
+if(open.length){
+
+data.mission={
+title:open[0].title,
+meta:open[0].meta||'One meaningful step today.',
+created:new Date().toISOString()
+};
+
+}
+else{
+
+const ideas=[
+
+'Spend 15 minutes improving something in your home.',
+'Take a 20-minute walk without your phone.',
+'Handle one small thing you have been avoiding.',
+'Reach out to someone you care about.',
+'Put 15 minutes toward something you want to accomplish.',
+'Do one thing that will make tomorrow easier.',
+'Learn something useful for 15 minutes.',
+'Clean or organize one small area completely.'
+
+];
+
+const idea=
+ideas[Math.floor(Math.random()*ideas.length)];
+
+data.mission={
+title:idea,
+meta:'A small action that can make today better.',
+created:new Date().toISOString()
+};
+
+}
+
+saveData();
+
+}
+
+
+function completeMission(){
+
+if(data.mission){
+
+data.tasks.push({
+id:Date.now(),
+title:'18-Hour Mission: '+data.mission.title,
+meta:'Completed today',
+priority:3,
+done:true
+});
+
+}
+
+data.mission=null;
+
+saveData();
+
+generateMission();
+
+}
+
+
+/* =========================================
+RENDER
+========================================= */
+
 function render(){
 
-let open=data.tasks.filter(x=>!x.done);
+let open=data.tasks.filter(function(t){
+return !t.done;
+});
 
-let done=data.tasks.filter(x=>x.done);
-
-document.getElementById('openCount').textContent=open.length;
-
-document.getElementById('doneCount').textContent=done.length;
-
-document.getElementById('goalCount').textContent=data.goals.length;
+let done=data.tasks.filter(function(t){
+return t.done;
+});
 
 
-document.getElementById('taskList').innerHTML=
+document.getElementById('openCount')
+.textContent=open.length;
 
-data.tasks.length?
+document.getElementById('doneCount')
+.textContent=done.length;
 
-data.tasks.map(t=>`
+document.getElementById('goalCount')
+.textContent=data.goals.length;
 
+
+document.getElementById('taskList')
+.innerHTML=data.tasks.length?
+
+data.tasks.map(function(t){
+
+return `
 <div class="item">
 
 <button
 class="check ${t.done?'done':''}"
-onclick="toggle(${t.id})">
+onclick="toggleTask(${t.id})">
 
 ${t.done?'✓':''}
 
 </button>
 
-<div class="itemmain">
+<div class="item-main">
 
 <b style="${t.done?'text-decoration:line-through;opacity:.55':''}">
-
 ${esc(t.title)}
-
 </b>
 
 <small>
@@ -871,52 +1850,29 @@ ${esc(t.meta||'')}
 </div>
 
 <span class="tag">
-
-${t.priority==3?'High':t.priority==1?'Low':'Normal'}
-
+${t.priority===3?'High':t.priority===1?'Low':'Normal'}
 </span>
 
-</div>
+</div>`;
 
-`).join('')
+}).join(''):
 
-:
-
-'<div class="empty">Nothing planned yet. Add your first task.</div>';
+'<div class="empty">Nothing planned yet.</div>';
 
 
-let n=open.sort(
-(a,b)=>b.priority-a.priority
-)[0];
+document.getElementById('goalList')
+.innerHTML=data.goals.length?
 
+data.goals.map(function(g){
 
-document.getElementById('nextTask').textContent=
+return `
+<div class="goal">
 
-n?n.title:'You are caught up. Nice work.';
-
-
-document.getElementById('nextMeta').textContent=
-
-n?
-(n.meta||''):
-'Add something new or enjoy the breathing room.';
-
-
-document.getElementById('goalList').innerHTML=
-
-data.goals.length?
-
-data.goals.map(g=>`
-
-<div style="margin-bottom:17px">
-
-<div style="display:flex;justify-content:space-between;margin-bottom:7px">
+<div class="goal-head">
 
 <b>${esc(g.title)}</b>
 
-<span class="sub">
-${g.progress}%
-</span>
+<span class="sub">${g.progress||0}%</span>
 
 </div>
 
@@ -924,29 +1880,601 @@ ${g.progress}%
 
 <div
 class="bar"
-style="width:${Math.min(100,g.progress)}%">
+style="width:${Math.min(100,g.progress||0)}%">
 </div>
 
 </div>
 
-</div>
+</div>`;
 
-`).join('')
-
-:
+}).join(''):
 
 '<div class="empty">No goals yet.</div>';
 
 
-let now=new Date();
+if(data.mission){
 
-let h=now.getHours();
+document.getElementById('missionTitle')
+.textContent=data.mission.title;
+
+document.getElementById('missionMeta')
+.textContent=data.mission.meta;
+
+}
+
+else{
+
+document.getElementById('missionTitle')
+.textContent='Your next mission is waiting.';
+
+document.getElementById('missionMeta')
+.textContent='Choose a meaningful action for today.';
+
+}
+
+}
 
 
-document.getElementById('greeting').textContent=
+/* =========================================
+TASKS
+========================================= */
 
-(h<12?
-'Good morning':
-h<18?
-'Good afternoon':
-'Good
+function toggleTask(id){
+
+const task=data.tasks.find(function(t){
+return t.id===id;
+});
+
+if(task){
+
+task.done=!task.done;
+
+saveData();
+
+}
+
+}
+
+
+/* =========================================
+MODAL
+========================================= */
+
+function closeModal(){
+
+document.getElementById('modal')
+.classList.remove('show');
+
+}
+
+
+function openModal(type){
+
+document.getElementById('modal')
+.classList.add('show');
+
+
+const title={
+quick:'What do you want to add?',
+task:'Add a task',
+event:'Add an event',
+habit:'Add a habit',
+goal:'Add a goal'
+}[type];
+
+document.getElementById('modalTitle')
+.textContent=title;
+
+
+if(type==='quick'){
+
+document.getElementById('modalBody')
+.innerHTML=`
+
+<div class="quick">
+
+<button onclick="openModal('task')">
+📝 <b>Task</b>
+<span>Something you need to do</span>
+</button>
+
+<button onclick="openModal('event')">
+📅 <b>Event</b>
+<span>Appointment or commitment</span>
+</button>
+
+<button onclick="openModal('habit')">
+🔁 <b>Habit</b>
+<span>Something repeated</span>
+</button>
+
+<button onclick="openModal('goal')">
+🎯 <b>Goal</b>
+<span>Something bigger</span>
+</button>
+
+</div>`;
+
+return;
+
+}
+
+
+if(type==='goal'){
+
+document.getElementById('modalBody')
+.innerHTML=`
+
+<div class="form">
+
+<label>
+Goal
+
+<input id="goalTitle"
+placeholder="Example: Save my first $500 emergency fund">
+</label>
+
+<label>
+Progress %
+
+<input id="goalProgress"
+type="number"
+min="0"
+max="100"
+value="0">
+</label>
+
+<div class="actions">
+
+<button class="btn"
+onclick="closeModal()">
+Cancel
+</button>
+
+<button class="btn primary"
+onclick="addGoal()">
+Add goal
+</button>
+
+</div>
+
+</div>`;
+
+return;
+
+}
+
+
+document.getElementById('modalBody')
+.innerHTML=`
+
+<div class="form">
+
+<label>
+What needs to happen?
+
+<input id="taskTitle"
+placeholder="Example: Call the dentist">
+</label>
+
+<label>
+When?
+
+<input id="taskWhen"
+placeholder="Today, tomorrow, Friday...">
+</label>
+
+<label>
+Priority
+
+<select id="taskPriority">
+
+<option value="3">High</option>
+<option value="2" selected>Normal</option>
+<option value="1">Low</option>
+
+</select>
+
+</label>
+
+<div class="actions">
+
+<button class="btn"
+onclick="closeModal()">
+Cancel
+</button>
+
+<button class="btn primary"
+onclick="addTask()">
+Add
+</button>
+
+</div>
+
+</div>`;
+
+}
+
+
+function addTask(){
+
+const title=document
+.getElementById('taskTitle')
+.value.trim();
+
+if(!title)return;
+
+const when=document
+.getElementById('taskWhen')
+.value.trim();
+
+const priority=Number(
+document.getElementById('taskPriority')
+.value
+);
+
+data.tasks.push({
+
+id:Date.now(),
+
+title:title,
+
+meta:when||'Added to your plan',
+
+priority:priority,
+
+done:false
+
+});
+
+saveData();
+
+closeModal();
+
+}
+
+
+function addGoal(){
+
+const title=document
+.getElementById('goalTitle')
+.value.trim();
+
+if(!title)return;
+
+const progress=Number(
+document.getElementById('goalProgress')
+.value||0
+);
+
+data.goals.push({
+
+id:Date.now(),
+
+title:title,
+
+progress:progress
+
+});
+
+saveData();
+
+closeModal();
+
+}
+
+
+/* =========================================
+VOICE
+========================================= */
+
+let recognition=null;
+let listening=false;
+
+
+function voiceSupported(){
+
+return window.SpeechRecognition||
+window.webkitSpeechRecognition;
+
+}
+
+
+function toggleVoice(){
+
+if(listening){
+
+stopVoice();
+
+return;
+
+}
+
+
+const SpeechRecognition=voiceSupported();
+
+if(!SpeechRecognition){
+
+document.getElementById('status')
+.textContent=
+'Voice recognition is not available in this browser.';
+
+return;
+
+}
+
+
+recognition=new SpeechRecognition();
+
+recognition.lang='en-US';
+
+recognition.interimResults=true;
+
+recognition.continuous=false;
+
+
+recognition.onstart=function(){
+
+listening=true;
+
+document.getElementById('assistantOrb')
+.classList.add('listening');
+
+document.getElementById('voiceButton')
+.textContent='⏹ Stop listening';
+
+document.getElementById('voiceButton')
+.classList.add('stop');
+
+document.getElementById('status')
+.textContent='Listening...';
+
+document.getElementById('transcript')
+.textContent='I’m listening.';
+
+};
+
+
+recognition.onresult=function(event){
+
+let finalText='';
+
+let interim='';
+
+for(
+let i=event.resultIndex;
+i<event.results.length;
+i++
+){
+
+const text=
+event.results[i][0].transcript;
+
+if(event.results[i].isFinal)
+finalText+=text;
+else
+interim+=text;
+
+}
+
+document.getElementById('transcript')
+.textContent=
+finalText||interim;
+
+if(finalText)
+processVoice(finalText.trim());
+
+};
+
+
+recognition.onerror=function(event){
+
+document.getElementById('status')
+.textContent=
+event.error==='not-allowed'?
+'Microphone permission was denied.':
+'Try that again.';
+
+stopVoice(true);
+
+};
+
+
+recognition.onend=function(){
+
+stopVoice(true);
+
+};
+
+
+try{
+
+recognition.start();
+
+}
+catch(e){
+
+document.getElementById('status')
+.textContent='Tap the microphone to try again.';
+
+}
+
+}
+
+
+function stopVoice(silent){
+
+listening=false;
+
+if(recognition){
+
+try{
+recognition.stop();
+}
+catch(e){}
+
+recognition=null;
+
+}
+
+document.getElementById('assistantOrb')
+.classList.remove('listening');
+
+document.getElementById('voiceButton')
+.classList.remove('stop');
+
+document.getElementById('voiceButton')
+.textContent='🎙️ Talk to '+assistantName();
+
+if(!silent){
+
+document.getElementById('status')
+.textContent='Ready when you are.';
+
+}
+
+}
+
+
+function exampleCommand(text){
+
+document.getElementById('transcript')
+.textContent=text;
+
+processVoice(text);
+
+}
+
+
+function processVoice(text){
+
+const lower=text.toLowerCase();
+
+
+if(
+lower.includes('what should')||
+lower.includes('what do i')||
+lower.includes('what can i')
+){
+
+const open=data.tasks
+.filter(function(t){
+return !t.done;
+})
+.sort(function(a,b){
+return b.priority-a.priority;
+});
+
+if(open.length){
+
+document.getElementById('status')
+.textContent=
+'Here’s what I would start with.';
+
+document.getElementById('transcript')
+.textContent=
+'I’d start with: '+open[0].title;
+
+}
+else{
+
+document.getElementById('status')
+.textContent='You are caught up.';
+
+document.getElementById('transcript')
+.textContent=
+'You have nothing urgent on your list. We can choose something meaningful to work on.';
+
+}
+
+return;
+
+}
+
+
+let title=text
+.replace(
+/^(please\s+)?(remind me to|i need to|i have to|i want to|can you|could you)\s+/i,
+''
+)
+.replace(/\.$/,'')
+.trim();
+
+
+if(!title)
+title=text;
+
+
+data.tasks.push({
+
+id:Date.now(),
+
+title:title,
+
+meta:'Added by '+assistantName()+' from voice',
+
+priority:2,
+
+done:false
+
+});
+
+
+saveData();
+
+
+document.getElementById('status')
+.textContent='Got it.';
+
+document.getElementById('transcript')
+.textContent=
+'I added "'+title+'" to your plan.';
+
+}
+
+
+/* =========================================
+MODAL CLICK OUTSIDE
+========================================= */
+
+document.getElementById('modal')
+.addEventListener('click',function(event){
+
+if(event.target.id==='modal')
+closeModal();
+
+});
+
+
+/* =========================================
+INITIALIZE
+========================================= */
+
+if(profile&&profile.setupComplete){
+
+document.getElementById('welcome')
+.classList.add('hidden');
+
+updateIdentity();
+
+}
+else{
+
+document.getElementById('assistantHeading')
+.textContent=
+'Nice to meet you.';
+
+}
+
+if(profile)
+loadProfileIntoForm();
+
+render();
+
+if(!data.mission)
+generateMission();
+
+</script>
+
+</body>
+</html>
