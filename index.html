@@ -1,141 +1,3230 @@
-export default async function handler(req, res){
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#19a974">
+<title>LifePilot — Your Life, Assisted</title>
 
-  if(req.method !== "GET"){
+<style>
+:root{
+  --green:#19a974;
+  --green-dark:#087f5b;
+  --green-light:#e9f8f1;
+  --bg:#f5f8f6;
+  --card:#ffffff;
+  --text:#18221e;
+  --muted:#68756f;
+  --border:#dfe8e3;
+  --danger:#d64545;
+  --shadow:0 10px 30px rgba(15,50,35,.08);
+}
 
-    return res.status(405).json({
-      error:"Method not allowed"
-    });
+*{box-sizing:border-box}
 
+html,body{
+  margin:0;
+  padding:0;
+  min-height:100%;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+button,input,textarea,select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* START SCREEN */
+
+.start-screen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:28px;
+  background:
+    radial-gradient(circle at top right,rgba(25,169,116,.16),transparent 35%),
+    linear-gradient(145deg,#f7fbf8,#eef7f2);
+}
+
+.start-card{
+  width:100%;
+  max-width:520px;
+  text-align:center;
+  background:white;
+  border:1px solid var(--border);
+  border-radius:32px;
+  padding:48px 30px;
+  box-shadow:var(--shadow);
+}
+
+.logo{
+  width:82px;
+  height:82px;
+  border-radius:25px;
+  margin:0 auto 24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--green);
+  color:white;
+  font-size:42px;
+  box-shadow:0 12px 25px rgba(25,169,116,.25);
+}
+
+.start-card h1{
+  margin:0 0 12px;
+  font-size:38px;
+  letter-spacing:-1px;
+}
+
+.start-card p{
+  color:var(--muted);
+  line-height:1.6;
+  font-size:17px;
+  margin:0 auto 30px;
+  max-width:410px;
+}
+
+.primary-button{
+  width:100%;
+  border:0;
+  border-radius:18px;
+  padding:17px 22px;
+  background:var(--green);
+  color:white;
+  font-weight:700;
+  font-size:18px;
+  box-shadow:0 8px 18px rgba(25,169,116,.22);
+}
+
+.primary-button:active{
+  transform:scale(.98);
+}
+
+/* VOICE ONBOARDING */
+
+.voice-screen{
+  min-height:100vh;
+  padding:20px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.voice-card{
+  width:100%;
+  max-width:620px;
+  background:white;
+  border:1px solid var(--border);
+  border-radius:30px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.voice-header{
+  padding:22px 24px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  gap:13px;
+}
+
+.mini-logo{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  background:var(--green);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+}
+
+.voice-header strong{
+  font-size:18px;
+}
+
+.voice-header small{
+  display:block;
+  color:var(--muted);
+  margin-top:2px;
+}
+
+.conversation{
+  min-height:480px;
+  padding:32px 24px 28px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.assistant-bubble{
+  width:100%;
+  max-width:520px;
+  background:var(--green-light);
+  border-radius:24px;
+  padding:23px;
+  font-size:20px;
+  line-height:1.5;
+  text-align:center;
+  margin-bottom:28px;
+}
+
+.assistant-bubble .label{
+  display:block;
+  color:var(--green-dark);
+  font-size:13px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-bottom:9px;
+}
+
+.listening-status{
+  min-height:25px;
+  color:var(--muted);
+  font-size:15px;
+  margin-bottom:16px;
+  text-align:center;
+}
+
+.mic-button{
+  width:112px;
+  height:112px;
+  border-radius:50%;
+  border:7px solid #d9f3e8;
+  background:var(--green);
+  color:white;
+  font-size:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 12px 28px rgba(25,169,116,.28);
+  transition:.2s;
+}
+
+.mic-button.listening{
+  animation:pulse 1.25s infinite;
+  background:var(--green-dark);
+}
+
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(25,169,116,.45)}
+  70%{box-shadow:0 0 0 24px rgba(25,169,116,0)}
+  100%{box-shadow:0 0 0 0 rgba(25,169,116,0)}
+}
+
+.mic-hint{
+  margin-top:14px;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.voice-actions{
+  display:flex;
+  gap:10px;
+  margin-top:25px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.secondary-button{
+  border:1px solid var(--border);
+  background:white;
+  color:var(--text);
+  border-radius:13px;
+  padding:11px 16px;
+  font-weight:600;
+}
+
+.text-fallback{
+  width:100%;
+  max-width:520px;
+  margin-top:18px;
+}
+
+.text-fallback textarea{
+  width:100%;
+  min-height:100px;
+  resize:vertical;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:14px;
+  outline:none;
+}
+
+.text-fallback textarea:focus{
+  border-color:var(--green);
+}
+
+.text-submit{
+  margin-top:9px;
+  width:100%;
+}
+
+/* MAIN APP */
+
+.app{
+  min-height:100vh;
+}
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(15px);
+  border-bottom:1px solid var(--border);
+  padding:13px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:800;
+}
+
+.brand-icon{
+  width:39px;
+  height:39px;
+  border-radius:12px;
+  background:var(--green);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.icon-button{
+  width:42px;
+  height:42px;
+  border:1px solid var(--border);
+  border-radius:13px;
+  background:white;
+}
+
+.main{
+  max-width:1050px;
+  margin:0 auto;
+  padding:25px 18px 100px;
+}
+
+.greeting{
+  margin-bottom:20px;
+}
+
+.greeting h1{
+  margin:0 0 6px;
+  font-size:31px;
+}
+
+.greeting p{
+  color:var(--muted);
+  margin:0;
+}
+
+.mission-card{
+  background:linear-gradient(135deg,#19a974,#087f5b);
+  color:white;
+  border-radius:25px;
+  padding:25px;
+  margin-bottom:20px;
+  box-shadow:0 12px 30px rgba(8,127,91,.18);
+}
+
+.mission-card .eyebrow{
+  opacity:.85;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+
+.mission-card h2{
+  margin:9px 0 9px;
+  font-size:25px;
+}
+
+.mission-card p{
+  margin:0;
+  opacity:.9;
+  line-height:1.5;
+}
+
+.mission-complete{
+  margin-top:18px;
+  border:0;
+  border-radius:13px;
+  padding:11px 17px;
+  background:white;
+  color:var(--green-dark);
+  font-weight:800;
+}
+
+.assistant-box{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:23px;
+  padding:18px;
+  margin-bottom:20px;
+  box-shadow:var(--shadow);
+}
+
+.assistant-input-row{
+  display:flex;
+  gap:10px;
+}
+
+.assistant-input{
+  flex:1;
+  min-width:0;
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:14px;
+  outline:none;
+}
+
+.assistant-input:focus{
+  border-color:var(--green);
+}
+
+.ask-button{
+  width:52px;
+  border:0;
+  border-radius:15px;
+  background:var(--green);
+  color:white;
+  font-size:20px;
+}
+
+.dashboard-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+}
+
+.card{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:21px;
+  padding:20px;
+  box-shadow:var(--shadow);
+}
+
+.card h3{
+  margin:0 0 8px;
+}
+
+.card p{
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.list{
+  margin-top:15px;
+}
+
+.list-item{
+  padding:12px 0;
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.list-item:first-child{
+  border-top:0;
+}
+
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(15px);
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:center;
+  z-index:30;
+}
+
+.bottom-nav-inner{
+  width:100%;
+  max-width:650px;
+  display:flex;
+  justify-content:space-around;
+}
+
+.nav-button{
+  border:0;
+  background:none;
+  padding:13px 18px;
+  color:var(--muted);
+  font-weight:700;
+}
+
+.nav-button.active{
+  color:var(--green-dark);
+}
+
+/* MODAL */
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  background:rgba(0,0,0,.42);
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+}
+
+.modal-card{
+  width:100%;
+  max-width:650px;
+  max-height:90vh;
+  overflow:auto;
+  background:white;
+  border-radius:27px 27px 0 0;
+  padding:24px;
+}
+
+.modal-card h2{
+  margin-top:0;
+}
+
+.form-group{
+  margin-bottom:15px;
+}
+
+.form-group label{
+  display:block;
+  font-size:14px;
+  font-weight:700;
+  margin-bottom:6px;
+}
+
+.form-group input,
+.form-group textarea{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:12px;
+  outline:none;
+}
+
+.form-group textarea{
+  min-height:100px;
+}
+
+.close-row{
+  display:flex;
+  justify-content:flex-end;
+  margin-bottom:8px;
+}
+
+.close-button{
+  border:0;
+  background:#f0f3f1;
+  border-radius:12px;
+  width:38px;
+  height:38px;
+}
+
+/* MOBILE */
+
+@media(max-width:650px){
+  .start-card h1{font-size:33px}
+  .conversation{min-height:460px}
+  .dashboard-grid{grid-template-columns:1fr}
+  .greeting h1{font-size:27px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     START SCREEN
+========================= -->
+
+<section id="startScreen" class="start-screen">
+  <div class="start-card">
+
+    <div class="logo">✦</div>
+
+    <h1>Meet LifePilot</h1>
+
+    <p>
+      Your life doesn't need another app full of forms.
+      Just talk to your assistant and let LifePilot help organize
+      what matters.
+    </p>
+
+    <button id="startButton" class="primary-button">
+      Start LifePilot
+    </button>
+
+  </div>
+</section>
+
+
+<!-- =========================
+     VOICE ONBOARDING
+========================= -->
+
+<section id="voiceScreen" class="voice-screen hidden">
+
+  <div class="voice-card">
+
+    <div class="voice-header">
+
+      <div class="mini-logo">✦</div>
+
+      <div>
+        <strong id="assistantHeaderName">LifePilot</strong>
+        <small>Your personal life assistant</small>
+      </div>
+
+    </div>
+
+
+    <div class="conversation">
+
+      <div id="assistantBubble" class="assistant-bubble">
+        <span class="label">LifePilot</span>
+        <span id="assistantMessage">
+          Give me just a second...
+        </span>
+      </div>
+
+
+      <div id="listeningStatus" class="listening-status">
+        Getting your microphone ready…
+      </div>
+
+
+      <button
+        id="micButton"
+        class="mic-button"
+        aria-label="Tap to answer"
+        title="Tap to answer">
+        🎙️
+      </button>
+
+      <div class="mic-hint" id="micHint">
+        Your microphone will start automatically after I finish speaking.
+      </div>
+
+
+      <div class="voice-actions">
+
+        <button
+          id="repeatButton"
+          class="secondary-button">
+          🔊 Repeat
+        </button>
+
+        <button
+          id="textToggleButton"
+          class="secondary-button">
+          ⌨️ Type instead
+        </button>
+
+        <button
+          id="skipButton"
+          class="secondary-button">
+          Skip
+        </button>
+
+      </div>
+
+
+      <div id="textFallback" class="text-fallback hidden">
+
+        <textarea
+          id="fallbackText"
+          placeholder="Type your answer here..."></textarea>
+
+        <button
+          id="textSubmit"
+          class="primary-button text-submit">
+          Send answer
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     MAIN APP
+========================= -->
+
+<section id="app" class="app hidden">
+
+  <header class="topbar">
+
+    <div class="brand">
+      <div class="brand-icon">✦</div>
+      <span id="brandName">LifePilot</span>
+    </div>
+
+    <button
+      id="settingsButton"
+      class="icon-button"
+      title="Settings">
+      ⚙️
+    </button>
+
+  </header>
+
+
+  <main class="main">
+
+    <div class="greeting">
+
+      <h1 id="homeGreeting">Good to see you.</h1>
+
+      <p>
+        Tell me what's going on. I'll help figure out what comes next.
+      </p>
+
+    </div>
+
+
+    <!-- DAILY MISSION -->
+
+    <section class="mission-card">
+
+      <div class="eyebrow">
+        Your 18-Hour Mission
+      </div>
+
+      <h2 id="missionText">
+        Let's figure out today's one important thing.
+      </h2>
+
+      <p id="missionExplanation">
+        One meaningful action. Something realistic that can actually move
+        your life forward.
+      </p>
+
+      <button
+        id="missionCompleteButton"
+        class="mission-complete">
+        ✓ Mark complete
+      </button>
+
+    </section>
+
+
+    <!-- ASSISTANT -->
+
+    <section class="assistant-box">
+
+      <div class="assistant-input-row">
+
+        <input
+          id="assistantInput"
+          class="assistant-input"
+          placeholder="Tell LifePilot what's going on...">
+
+        <button
+          id="askButton"
+          class="ask-button"
+          title="Ask LifePilot">
+          🎙️
+        </button>
+
+      </div>
+
+      <div
+        id="assistantResponse"
+        style="margin-top:14px;color:var(--muted);line-height:1.5;">
+      </div>
+
+    </section>
+
+
+    <div class="dashboard-grid">
+
+
+      <!-- TODAY -->
+
+      <section class="card">
+
+        <h3>Today</h3>
+
+        <p>
+          What needs your attention?
+        </p>
+
+        <div id="todayList" class="list"></div>
+
+      </section>
+
+
+      <!-- GOALS -->
+
+      <section class="card">
+
+        <h3>Goals</h3>
+
+        <p>
+          The things you're working toward.
+        </p>
+
+        <div id="goalsList" class="list"></div>
+
+      </section>
+
+
+      <!-- PATTERNS -->
+
+      <section class="card">
+
+        <h3>🔎 Things I've noticed</h3>
+
+        <p>
+          LifePilot will look for useful patterns over time.
+        </p>
+
+        <div id="patternsList" class="list">
+
+          <div class="list-item">
+            <span>Not enough information yet.</span>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- MEMORY -->
+
+      <section class="card">
+
+        <h3>🧠 Remembered</h3>
+
+        <p>
+          Things you've told LifePilot to remember.
+        </p>
+
+        <div id="memoryList" class="list"></div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <nav class="bottom-nav">
+
+    <div class="bottom-nav-inner">
+
+      <button class="nav-button active" onclick="showHome()">
+        Home
+      </button>
+
+      <button class="nav-button" onclick="openGoals()">
+        Goals
+      </button>
+
+      <button class="nav-button" onclick="openMemory()">
+        Memory
+      </button>
+
+      <button class="nav-button" onclick="openSettings()">
+        Settings
+      </button>
+
+    </div>
+
+  </nav>
+
+</section>
+
+
+<!-- =========================
+     MODAL
+========================= -->
+
+<div id="modal" class="modal hidden">
+
+  <div class="modal-card">
+
+    <div class="close-row">
+      <button
+        class="close-button"
+        onclick="closeModal()">
+        ✕
+      </button>
+    </div>
+
+    <div id="modalContent"></div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* ==========================================================
+   LIFE PILOT — VOICE-FIRST ENGINE
+========================================================== */
+
+const PROFILE_KEY = "lifepilot_profile_v5";
+const DATA_KEY = "lifepilot_data_v5";
+
+
+/* ==========================================================
+   STATE
+========================================================== */
+
+let profile = loadJSON(PROFILE_KEY, {
+  assistantName: "LifePilot",
+  userName: "",
+  birthday: "",
+  age: "",
+  height: "",
+  weight: "",
+  clothingSize: "",
+  shoeSize: "",
+  schedule: "",
+  goals: "",
+  remember: "",
+  usefulness: ""
+});
+
+
+let data = loadJSON(DATA_KEY, {
+  tasks: [],
+  events: [],
+  habits: [],
+  goals: [],
+  memories: [],
+  patterns: [],
+  mission: null,
+  history: []
+});
+
+
+let onboardingStep = 0;
+let recognition = null;
+let recognitionAvailable = false;
+let currentlyListening = false;
+let currentlySpeaking = false;
+let microphonePermission = false;
+let lastQuestion = "";
+let speechGeneration = 0;
+
+
+/* ==========================================================
+   ONBOARDING QUESTIONS
+========================================================== */
+
+const onboardingQuestions = [
+
+  {
+    key:"assistantName",
+    question:
+      "Okay, first things first. What would you like to call me?",
+    optional:false
+  },
+
+  {
+    key:"userName",
+    question:
+      "I like that. And what should I call you?",
+    optional:false
+  },
+
+  {
+    key:"birthday",
+    question:
+      "I'd like to know your birthday if you're comfortable sharing it. It's completely optional.",
+    optional:true
+  },
+
+  {
+    key:"age",
+    question:
+      "And how old are you? You can skip that if you'd rather.",
+    optional:true
+  },
+
+  {
+    key:"body",
+    question:
+      "Is there anything about your size you'd like me to remember, like your height, weight, clothing size, or shoe size? You can give me as much or as little as you want.",
+    optional:true
+  },
+
+  {
+    key:"schedule",
+    question:
+      "What does a normal day or work schedule look like for you? For example, when you usually work, sleep, or have free time.",
+    optional:true
+  },
+
+  {
+    key:"goals",
+    question:
+      "What are you trying to make happen in your life right now? Big goals, small goals, weird goals — anything that matters to you.",
+    optional:true
+  },
+
+  {
+    key:"remember",
+    question:
+      "Is there anything you want me to remember about you so I can be more useful later?",
+    optional:true
+  },
+
+  {
+    key:"usefulness",
+    question:
+      "Last one for now. What would make you think, 'Holy crap, this thing is actually useful'? What would you want me to help with?",
+    optional:true
   }
 
-  const apiKey =
-    process.env.ELEVENLABS_API_KEY;
+];
 
-  if(!apiKey){
 
-    return res.status(500).json({
-      error:
-        "ELEVENLABS_API_KEY is not configured."
-    });
+/* ==========================================================
+   DOM
+========================================================== */
 
-  }
+const startScreen = document.getElementById("startScreen");
+const voiceScreen = document.getElementById("voiceScreen");
+const app = document.getElementById("app");
+
+const startButton = document.getElementById("startButton");
+
+const assistantBubble =
+  document.getElementById("assistantMessage");
+
+const assistantHeaderName =
+  document.getElementById("assistantHeaderName");
+
+const listeningStatus =
+  document.getElementById("listeningStatus");
+
+const micButton =
+  document.getElementById("micButton");
+
+const micHint =
+  document.getElementById("micHint");
+
+const repeatButton =
+  document.getElementById("repeatButton");
+
+const textToggleButton =
+  document.getElementById("textToggleButton");
+
+const skipButton =
+  document.getElementById("skipButton");
+
+const textFallback =
+  document.getElementById("textFallback");
+
+const fallbackText =
+  document.getElementById("fallbackText");
+
+const textSubmit =
+  document.getElementById("textSubmit");
+
+
+/* ==========================================================
+   STORAGE
+========================================================== */
+
+function loadJSON(key, fallback){
 
   try{
 
-    const url =
-      new URL(
-        "https://api.elevenlabs.io/v2/voices"
-      );
+    const raw = localStorage.getItem(key);
 
-    url.searchParams.set(
-      "language",
-      "en"
-    );
-
-    url.searchParams.set(
-      "use_cases",
-      "conversational"
-    );
-
-    url.searchParams.set(
-      "include_total_count",
-      "true"
-    );
-
-    const response =
-      await fetch(
-        url.toString(),
-        {
-          headers:{
-            "xi-api-key":apiKey
-          }
-        }
-      );
-
-    if(!response.ok){
-
-      const error =
-        await response.text();
-
-      console.error(error);
-
-      return res.status(
-        response.status
-      ).json({
-        error:"Unable to load voices."
-      });
-
+    if(!raw){
+      return fallback;
     }
 
-    const data =
-      await response.json();
-
-    /*
-      Never send American voices to LifePilot's UI.
-    */
-
-    const voices =
-      (data.voices || [])
-        .filter(voice=>{
-
-          const accent =
-            String(
-              voice.labels?.accent || ""
-            ).toLowerCase();
-
-          const gender =
-            String(
-              voice.labels?.gender || ""
-            ).toLowerCase();
-
-          const american =
-            accent.includes("american") ||
-            accent.includes("usa") ||
-            accent.includes("us");
-
-          const allowed =
-            accent.includes("british") ||
-            accent.includes("australian") ||
-            accent.includes("canadian");
-
-          const genderAllowed =
-            gender.includes("male") ||
-            gender.includes("female");
-
-          return (
-            !american &&
-            allowed &&
-            genderAllowed
-          );
-
-        })
-        .map(voice=>({
-
-          voice_id:
-            voice.voice_id,
-
-          name:
-            voice.name,
-
-          labels:
-            voice.labels || {},
-
-          preview_url:
-            voice.preview_url || ""
-
-        }));
-
-    return res.status(200).json({
-      voices
-    });
+    return JSON.parse(raw);
 
   }catch(error){
 
-    console.error(error);
+    console.warn("Storage error:",error);
 
-    return res.status(500).json({
-      error:"Unable to load LifePilot voices."
+    return fallback;
+  }
+}
+
+
+function saveAll(){
+
+  localStorage.setItem(
+    PROFILE_KEY,
+    JSON.stringify(profile)
+  );
+
+  localStorage.setItem(
+    DATA_KEY,
+    JSON.stringify(data)
+  );
+}
+
+
+/* ==========================================================
+   SPEECH SYNTHESIS
+========================================================== */
+
+function chooseVoice(){
+
+  const voices =
+    window.speechSynthesis
+      ? window.speechSynthesis.getVoices()
+      : [];
+
+  if(!voices.length){
+    return null;
+  }
+
+  const preferred = [
+    "Google US English",
+    "Google UK English",
+    "Microsoft Jenny",
+    "Microsoft Aria",
+    "Samantha"
+  ];
+
+  for(const wanted of preferred){
+
+    const match = voices.find(v =>
+      v.name.toLowerCase().includes(wanted.toLowerCase())
+    );
+
+    if(match){
+      return match;
+    }
+  }
+
+  const englishCanadian =
+    voices.find(v =>
+      v.lang &&
+      v.lang.toLowerCase() === "en-ca"
+    );
+
+  if(englishCanadian){
+    return englishCanadian;
+  }
+
+  const english =
+    voices.find(v =>
+      v.lang &&
+      v.lang.toLowerCase().startsWith("en")
+    );
+
+  return english || voices[0];
+}
+
+
+function speak(text, afterSpeech){
+
+  if(!window.speechSynthesis){
+
+    if(afterSpeech){
+      afterSpeech();
+    }
+
+    return;
+  }
+
+
+  speechGeneration++;
+
+  const thisGeneration = speechGeneration;
+
+  currentlySpeaking = true;
+
+  stopListening();
+
+
+  window.speechSynthesis.cancel();
+
+
+  const utterance =
+    new SpeechSynthesisUtterance(text);
+
+
+  utterance.lang = "en-CA";
+
+  utterance.rate = .94;
+
+  utterance.pitch = 1.0;
+
+  utterance.volume = 1;
+
+
+  const voice = chooseVoice();
+
+  if(voice){
+    utterance.voice = voice;
+  }
+
+
+  utterance.onstart = function(){
+
+    currentlySpeaking = true;
+
+    listeningStatus.textContent =
+      "LifePilot is speaking…";
+
+  };
+
+
+  utterance.onend = function(){
+
+    if(thisGeneration !== speechGeneration){
+      return;
+    }
+
+    currentlySpeaking = false;
+
+    if(afterSpeech){
+      setTimeout(afterSpeech,350);
+    }
+
+  };
+
+
+  utterance.onerror = function(){
+
+    currentlySpeaking = false;
+
+    if(afterSpeech){
+      setTimeout(afterSpeech,200);
+    }
+
+  };
+
+
+  window.speechSynthesis.speak(utterance);
+}
+
+
+/* ==========================================================
+   SPEECH RECOGNITION
+========================================================== */
+
+function setupRecognition(){
+
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+
+  if(!SpeechRecognition){
+
+    recognitionAvailable = false;
+
+    listeningStatus.textContent =
+      "Voice recognition isn't available in this browser. You can still use the microphone button if your browser supports it, or type your answer.";
+
+    micHint.textContent =
+      "Typing is available as a fallback.";
+
+    return;
+  }
+
+
+  recognitionAvailable = true;
+
+  recognition = new SpeechRecognition();
+
+
+  recognition.lang = "en-CA";
+
+  recognition.continuous = false;
+
+  recognition.interimResults = false;
+
+  recognition.maxAlternatives = 1;
+
+
+  recognition.onstart = function(){
+
+    currentlyListening = true;
+
+    micButton.classList.add("listening");
+
+    micButton.textContent = "⏹️";
+
+    listeningStatus.textContent =
+      "I'm listening…";
+
+    micHint.textContent =
+      "Go ahead. I'm listening.";
+
+  };
+
+
+  recognition.onresult = function(event){
+
+    const transcript =
+      event.results[0][0].transcript.trim();
+
+
+    currentlyListening = false;
+
+    micButton.classList.remove("listening");
+
+    micButton.textContent = "🎙️";
+
+
+    if(transcript){
+
+      handleOnboardingAnswer(transcript);
+
+    }
+
+  };
+
+
+  recognition.onerror = function(event){
+
+    currentlyListening = false;
+
+    micButton.classList.remove("listening");
+
+    micButton.textContent = "🎙️";
+
+
+    if(event.error === "not-allowed"){
+
+      listeningStatus.textContent =
+        "Microphone access was blocked. Tap the microphone again or use Type instead.";
+
+    }else if(event.error === "no-speech"){
+
+      listeningStatus.textContent =
+        "I didn't hear anything. Tap the microphone and try again.";
+
+    }else{
+
+      listeningStatus.textContent =
+        "I couldn't hear that. Tap the microphone and try again.";
+
+    }
+
+  };
+
+
+  recognition.onend = function(){
+
+    currentlyListening = false;
+
+    micButton.classList.remove("listening");
+
+    micButton.textContent = "🎙️";
+
+  };
+
+}
+
+
+/* ==========================================================
+   MICROPHONE PERMISSION
+========================================================== */
+
+async function requestMicrophone(){
+
+  if(!navigator.mediaDevices ||
+     !navigator.mediaDevices.getUserMedia){
+
+    return false;
+  }
+
+
+  try{
+
+    const stream =
+      await navigator.mediaDevices.getUserMedia({
+        audio:true
+      });
+
+
+    microphonePermission = true;
+
+
+    /*
+      We only need the permission here.
+      SpeechRecognition handles the actual listening.
+    */
+
+    stream.getTracks().forEach(track=>{
+      track.stop();
+    });
+
+
+    return true;
+
+  }catch(error){
+
+    console.warn(
+      "Microphone permission:",
+      error
+    );
+
+    microphonePermission = false;
+
+    listeningStatus.textContent =
+      "I couldn't get microphone access. You can still type, or tap the microphone again.";
+
+    return false;
+  }
+
+}
+
+
+/* ==========================================================
+   START LIFE PILOT
+========================================================== */
+
+startButton.addEventListener("click", beginLifePilot);
+
+
+async function beginLifePilot(){
+
+  startButton.disabled = true;
+
+  startScreen.classList.add("hidden");
+
+  voiceScreen.classList.remove("hidden");
+
+
+  setupRecognition();
+
+
+  /*
+    This first action happens because the user
+    physically tapped Start. That gives the browser
+    the user interaction it needs for audio/permission.
+  */
+
+  await requestMicrophone();
+
+
+  assistantHeaderName.textContent =
+    profile.assistantName || "LifePilot";
+
+
+  const firstQuestion =
+    onboardingQuestions[0].question;
+
+
+  showQuestion(firstQuestion);
+
+
+  speak(
+    "Hey. I'm glad you're here. Let's set this up so I can actually be useful to you. " +
+    firstQuestion,
+    autoListen
+  );
+
+}
+
+
+/* ==========================================================
+   SHOW QUESTION
+========================================================== */
+
+function showQuestion(text){
+
+  lastQuestion = text;
+
+  assistantBubble.textContent = text;
+
+}
+
+
+/* ==========================================================
+   AUTOMATIC LISTENING
+========================================================== */
+
+function autoListen(){
+
+  if(currentlySpeaking){
+    return;
+  }
+
+
+  if(!recognitionAvailable){
+
+    listeningStatus.textContent =
+      "Tap Type instead to answer.";
+
+    return;
+  }
+
+
+  /*
+    Small delay prevents Android Chrome from sometimes
+    trying to start the microphone while audio is still
+    shutting down.
+  */
+
+  setTimeout(()=>{
+
+    if(currentlySpeaking){
+      return;
+    }
+
+    startListening();
+
+  },500);
+
+}
+
+
+/* ==========================================================
+   START LISTENING
+========================================================== */
+
+function startListening(){
+
+  if(!recognitionAvailable || !recognition){
+
+    textFallback.classList.remove("hidden");
+
+    listeningStatus.textContent =
+      "Type your answer below.";
+
+    return;
+  }
+
+
+  if(currentlySpeaking){
+    return;
+  }
+
+
+  if(currentlyListening){
+
+    stopListening();
+
+    return;
+  }
+
+
+  try{
+
+    recognition.start();
+
+  }catch(error){
+
+    console.warn(
+      "Recognition start:",
+      error
+    );
+
+    listeningStatus.textContent =
+      "Tap the microphone to answer.";
+
+  }
+
+}
+
+
+function stopListening(){
+
+  if(!recognition){
+    return;
+  }
+
+
+  try{
+
+    recognition.stop();
+
+  }catch(error){
+
+    /* Already stopped. Nothing to do. */
+
+  }
+
+
+  currentlyListening = false;
+
+  micButton.classList.remove("listening");
+
+  micButton.textContent = "🎙️";
+
+}
+
+
+/* ==========================================================
+   MIC BUTTON
+========================================================== */
+
+micButton.addEventListener("click",async function(){
+
+  if(currentlyListening){
+
+    stopListening();
+
+    listeningStatus.textContent =
+      "Paused.";
+
+    return;
+  }
+
+
+  if(!microphonePermission){
+
+    const granted =
+      await requestMicrophone();
+
+    if(!granted){
+
+      textFallback.classList.remove("hidden");
+
+      return;
+    }
+  }
+
+
+  startListening();
+
+});
+
+
+/* ==========================================================
+   REPEAT
+========================================================== */
+
+repeatButton.addEventListener("click",function(){
+
+  if(!lastQuestion){
+    return;
+  }
+
+
+  speak(
+    lastQuestion,
+    autoListen
+  );
+
+});
+
+
+/* ==========================================================
+   TEXT FALLBACK
+========================================================== */
+
+textToggleButton.addEventListener(
+  "click",
+  function(){
+
+    textFallback.classList.toggle("hidden");
+
+    if(!textFallback.classList.contains("hidden")){
+
+      fallbackText.focus();
+
+      listeningStatus.textContent =
+        "Type your answer below.";
+
+    }
+
+  }
+);
+
+
+textSubmit.addEventListener(
+  "click",
+  function(){
+
+    const answer =
+      fallbackText.value.trim();
+
+
+    if(!answer){
+      return;
+    }
+
+
+    fallbackText.value = "";
+
+    textFallback.classList.add("hidden");
+
+    handleOnboardingAnswer(answer);
+
+  }
+);
+
+
+fallbackText.addEventListener(
+  "keydown",
+  function(event){
+
+    if(event.key === "Enter" && !event.shiftKey){
+
+      event.preventDefault();
+
+      textSubmit.click();
+
+    }
+
+  }
+);
+
+
+/* ==========================================================
+   SKIP
+========================================================== */
+
+skipButton.addEventListener(
+  "click",
+  function(){
+
+    handleOnboardingAnswer("skip");
+
+  }
+);
+
+
+/* ==========================================================
+   ANSWER HANDLING
+========================================================== */
+
+function handleOnboardingAnswer(answer){
+
+  stopListening();
+
+
+  const step =
+    onboardingQuestions[onboardingStep];
+
+
+  const cleaned =
+    answer.trim();
+
+
+  if(isSkip(cleaned)){
+
+    storeOnboardingValue(
+      step.key,
+      ""
+    );
+
+    advanceOnboarding(
+      "No problem. We'll leave that one alone for now."
+    );
+
+    return;
+  }
+
+
+  storeOnboardingValue(
+    step.key,
+    cleaned
+  );
+
+
+  let response = "";
+
+
+  switch(step.key){
+
+    case "assistantName":
+
+      profile.assistantName =
+        cleaned;
+
+      assistantHeaderName.textContent =
+        cleaned;
+
+      response =
+        `Okay. ${cleaned} it is. Now, what should I call you?`;
+
+      break;
+
+
+    case "userName":
+
+      profile.userName =
+        cleaned;
+
+      response =
+        `Nice to meet you, ${cleaned}. Let's get a few things about you so I can actually help instead of just being another talking box.`;
+
+      break;
+
+
+    case "birthday":
+
+      profile.birthday =
+        cleaned;
+
+      const derivedAge =
+        calculateAgeFromText(cleaned);
+
+      if(derivedAge){
+
+        profile.age =
+          String(derivedAge);
+
+      }
+
+      response =
+        "Got it. And how old are you?";
+
+      break;
+
+
+    case "age":
+
+      const foundAge =
+        extractAge(cleaned);
+
+      profile.age =
+        foundAge || cleaned;
+
+      response =
+        "Perfect. Next, tell me anything about your size you'd like me to remember.";
+
+      break;
+
+
+    case "body":
+
+      profile.height =
+        extractField(cleaned,[
+          "height",
+          "tall"
+        ]);
+
+      profile.weight =
+        extractField(cleaned,[
+          "weight",
+          "lbs",
+          "pounds",
+          "kg"
+        ]);
+
+      profile.clothingSize =
+        extractField(cleaned,[
+          "shirt",
+          "clothing",
+          "pants",
+          "waist",
+          "size"
+        ]);
+
+      profile.shoeSize =
+        extractField(cleaned,[
+          "shoe",
+          "shoes"
+        ]);
+
+      response =
+        "Good. Now tell me what a normal day or work schedule looks like for you.";
+
+      break;
+
+
+    case "schedule":
+
+      profile.schedule =
+        cleaned;
+
+      response =
+        "That helps. Now the interesting part: what are you trying to make happen in your life right now?";
+
+      break;
+
+
+    case "goals":
+
+      profile.goals =
+        cleaned;
+
+      data.goals.push({
+        id:Date.now(),
+        text:cleaned,
+        created:new Date().toISOString()
+      });
+
+      response =
+        "I’ve got it. Is there anything about you that you want me to remember so I can be more useful later?";
+
+      break;
+
+
+    case "remember":
+
+      profile.remember =
+        cleaned;
+
+      if(cleaned){
+
+        data.memories.push({
+          id:Date.now(),
+          text:cleaned,
+          created:new Date().toISOString()
+        });
+
+      }
+
+      response =
+        "Got it. Last one for now: what would make you think, 'Holy crap, this thing is actually useful'?";
+
+      break;
+
+
+    case "usefulness":
+
+      profile.usefulness =
+        cleaned;
+
+      response =
+        "Okay. I have a much better idea of how to start helping you. Let's get your first mission set up.";
+
+      break;
+
+  }
+
+
+  saveAll();
+
+
+  advanceOnboarding(response);
+
+}
+
+
+/* ==========================================================
+   SKIP DETECTION
+========================================================== */
+
+function isSkip(text){
+
+  const value =
+    text.toLowerCase().trim();
+
+
+  return [
+    "skip",
+    "skip it",
+    "no",
+    "nope",
+    "none",
+    "nothing",
+    "rather not",
+    "i'd rather not",
+    "id rather not",
+    "don't want to",
+    "dont want to",
+    "prefer not",
+    "not comfortable"
+  ].includes(value);
+
+}
+
+
+/* ==========================================================
+   STORE VALUES
+========================================================== */
+
+function storeOnboardingValue(key,value){
+
+  if(key === "body"){
+
+    profile.body =
+      value;
+
+    return;
+  }
+
+
+  profile[key] =
+    value;
+
+}
+
+
+/* ==========================================================
+   ADVANCE
+========================================================== */
+
+function advanceOnboarding(response){
+
+  onboardingStep++;
+
+
+  if(onboardingStep >= onboardingQuestions.length){
+
+    finishOnboarding(response);
+
+    return;
+  }
+
+
+  const next =
+    onboardingQuestions[onboardingStep];
+
+
+  showQuestion(
+    response
+  );
+
+
+  speak(
+    response,
+    function(){
+
+      showQuestion(
+        next.question
+      );
+
+
+      speak(
+        next.question,
+        autoListen
+      );
+
+    }
+  );
+
+}
+
+
+/* ==========================================================
+   FINISH ONBOARDING
+========================================================== */
+
+function finishOnboarding(finalResponse){
+
+  generateMission();
+
+
+  saveAll();
+
+
+  showQuestion(
+    finalResponse
+  );
+
+
+  speak(
+    finalResponse,
+    function(){
+
+      setTimeout(
+        showMainApp,
+        500
+      );
+
+    }
+  );
+
+}
+
+
+/* ==========================================================
+   MAIN APP
+========================================================== */
+
+function showMainApp(){
+
+  voiceScreen.classList.add("hidden");
+
+  app.classList.remove("hidden");
+
+
+  updateHome();
+
+}
+
+
+function updateHome(){
+
+  const name =
+    profile.userName ||
+    "there";
+
+
+  document.getElementById(
+    "homeGreeting"
+  ).textContent =
+    `Good to see you, ${name}.`;
+
+
+  document.getElementById(
+    "brandName"
+  ).textContent =
+    profile.assistantName || "LifePilot";
+
+
+  renderToday();
+
+  renderGoals();
+
+  renderMemory();
+
+  renderMission();
+
+  renderPatterns();
+
+}
+
+
+/* ==========================================================
+   MISSION ENGINE
+========================================================== */
+
+function generateMission(){
+
+  if(data.mission &&
+     data.mission.date === todayKey() &&
+     !data.mission.completed){
+
+    return;
+  }
+
+
+  let mission =
+    "";
+
+
+  const goals =
+    (profile.goals || "").toLowerCase();
+
+
+  if(goals.includes("health") ||
+     goals.includes("exercise") ||
+     goals.includes("fitness")){
+
+    mission =
+      "Take a 20-minute walk today.";
+
+  }else if(
+    goals.includes("money") ||
+    goals.includes("financial") ||
+    goals.includes("finance")
+  ){
+
+    mission =
+      "Spend 15 minutes identifying one expense you can reduce.";
+
+  }else if(
+    goals.includes("garage") ||
+    goals.includes("shop") ||
+    goals.includes("build")
+  ){
+
+    mission =
+      "Spend 20 minutes clearing one small work area so you can build or repair something.";
+
+  }else if(profile.goals){
+
+    mission =
+      "Spend 20 minutes taking one concrete step toward your biggest current goal.";
+
+  }else{
+
+    mission =
+      "Spend 15 minutes improving one small thing in your environment.";
+
+  }
+
+
+  data.mission = {
+
+    text:mission,
+
+    date:todayKey(),
+
+    completed:false,
+
+    created:new Date().toISOString()
+
+  };
+
+
+  saveAll();
+
+}
+
+
+function renderMission(){
+
+  if(!data.mission){
+    generateMission();
+  }
+
+
+  document.getElementById(
+    "missionText"
+  ).textContent =
+    data.mission.text;
+
+
+  document.getElementById(
+    "missionExplanation"
+  ).textContent =
+    data.mission.completed
+      ? "Nice work. Your mission is complete."
+      : "One meaningful action. Something realistic that can actually move your life forward.";
+
+
+  const button =
+    document.getElementById(
+      "missionCompleteButton"
+    );
+
+
+  button.textContent =
+    data.mission.completed
+      ? "✓ Completed"
+      : "✓ Mark complete";
+
+
+  button.disabled =
+    data.mission.completed;
+
+}
+
+
+document.getElementById(
+  "missionCompleteButton"
+).addEventListener(
+  "click",
+  function(){
+
+    if(!data.mission){
+      return;
+    }
+
+
+    data.mission.completed =
+      true;
+
+
+    data.history.push({
+
+      type:"mission_completed",
+
+      mission:data.mission.text,
+
+      time:new Date().toISOString()
+
+    });
+
+
+    saveAll();
+
+    renderMission();
+
+    renderPatterns();
+
+  }
+);
+
+
+/* ==========================================================
+   TODAY
+========================================================== */
+
+function renderToday(){
+
+  const list =
+    document.getElementById(
+      "todayList"
+    );
+
+
+  list.innerHTML = "";
+
+
+  if(!data.tasks.length &&
+     !data.events.length){
+
+    list.innerHTML =
+      `<div class="list-item">
+        <span>Nothing scheduled yet.</span>
+      </div>`;
+
+    return;
+  }
+
+
+  data.tasks.slice(0,5).forEach(task=>{
+
+    const item =
+      document.createElement("div");
+
+    item.className =
+      "list-item";
+
+    item.innerHTML =
+      `<span>${escapeHTML(task.text)}</span>
+       <span>○</span>`;
+
+    list.appendChild(item);
+
+  });
+
+
+  data.events.slice(0,5).forEach(event=>{
+
+    const item =
+      document.createElement("div");
+
+    item.className =
+      "list-item";
+
+    item.innerHTML =
+      `<span>${escapeHTML(event.text)}</span>
+       <span>📅</span>`;
+
+    list.appendChild(item);
+
+  });
+
+}
+
+
+/* ==========================================================
+   GOALS
+========================================================== */
+
+function renderGoals(){
+
+  const list =
+    document.getElementById(
+      "goalsList"
+    );
+
+
+  list.innerHTML = "";
+
+
+  if(!data.goals.length){
+
+    if(profile.goals){
+
+      const item =
+        document.createElement("div");
+
+      item.className =
+        "list-item";
+
+      item.innerHTML =
+        `<span>${escapeHTML(profile.goals)}</span>`;
+
+      list.appendChild(item);
+
+    }else{
+
+      list.innerHTML =
+        `<div class="list-item">
+          <span>No goals added yet.</span>
+        </div>`;
+
+    }
+
+    return;
+  }
+
+
+  data.goals.slice(-5).reverse().forEach(goal=>{
+
+    const item =
+      document.createElement("div");
+
+    item.className =
+      "list-item";
+
+    item.innerHTML =
+      `<span>${escapeHTML(goal.text)}</span>
+       <span>🎯</span>`;
+
+    list.appendChild(item);
+
+  });
+
+}
+
+
+/* ==========================================================
+   MEMORY
+========================================================== */
+
+function renderMemory(){
+
+  const list =
+    document.getElementById(
+      "memoryList"
+    );
+
+
+  list.innerHTML = "";
+
+
+  if(!data.memories.length &&
+     !profile.remember){
+
+    list.innerHTML =
+      `<div class="list-item">
+        <span>Nothing stored yet.</span>
+      </div>`;
+
+    return;
+  }
+
+
+  const memories =
+    [...data.memories];
+
+
+  if(profile.remember &&
+     !memories.some(
+       m=>m.text === profile.remember
+     )){
+
+    memories.push({
+      text:profile.remember
     });
 
   }
 
+
+  memories.slice(-5).reverse().forEach(memory=>{
+
+    const item =
+      document.createElement("div");
+
+    item.className =
+      "list-item";
+
+    item.innerHTML =
+      `<span>${escapeHTML(memory.text)}</span>
+       <span>🧠</span>`;
+
+    list.appendChild(item);
+
+  });
+
+}
+
+
+/* ==========================================================
+   PATTERN ENGINE FOUNDATION
+========================================================== */
+
+function renderPatterns(){
+
+  const list =
+    document.getElementById(
+      "patternsList"
+    );
+
+
+  list.innerHTML = "";
+
+
+  const history =
+    data.history || [];
+
+
+  if(history.length < 3){
+
+    list.innerHTML =
+      `<div class="list-item">
+        <span>I'm still learning your patterns. Keep talking to me.</span>
+      </div>`;
+
+    return;
+  }
+
+
+  const completed =
+    history.filter(
+      h=>h.type === "mission_completed"
+    ).length;
+
+
+  if(completed >= 3){
+
+    list.innerHTML =
+      `<div class="list-item">
+        <span>You've completed ${completed} missions. That's becoming a pattern.</span>
+      </div>`;
+
+    return;
+  }
+
+
+  list.innerHTML =
+    `<div class="list-item">
+      <span>I'm watching for useful patterns without jumping to conclusions.</span>
+    </div>`;
+
+}
+
+
+/* ==========================================================
+   NATURAL LANGUAGE ASSISTANT
+========================================================== */
+
+document.getElementById(
+  "askButton"
+).addEventListener(
+  "click",
+  function(){
+
+    /*
+      For now this opens the browser's voice recognition.
+      Later this exact point becomes:
+      Voice → AI API → Understanding → Action → Confirmation.
+    */
+
+    if(!recognitionAvailable){
+
+      document.getElementById(
+        "assistantResponse"
+      ).textContent =
+        "Voice recognition isn't available here yet. The AI connection will be added next.";
+
+      return;
+    }
+
+
+    const original =
+      recognition.onresult;
+
+
+    recognition.onresult =
+      function(event){
+
+        const transcript =
+          event.results[0][0].transcript.trim();
+
+
+        recognition.onresult =
+          original;
+
+
+        processAssistantCommand(
+          transcript
+        );
+
+      };
+
+
+    startListening();
+
+  }
+);
+
+
+document.getElementById(
+  "assistantInput"
+).addEventListener(
+  "keydown",
+  function(event){
+
+    if(event.key === "Enter"){
+
+      const text =
+        event.target.value.trim();
+
+
+      if(text){
+
+        event.target.value = "";
+
+        processAssistantCommand(
+          text
+        );
+
+      }
+
+    }
+
+  }
+);
+
+
+function processAssistantCommand(command){
+
+  const responseBox =
+    document.getElementById(
+      "assistantResponse"
+    );
+
+
+  const lower =
+    command.toLowerCase();
+
+
+  /*
+    Basic local actions for now.
+    These will eventually be replaced/enhanced
+    by the real AI API.
+  */
+
+
+  if(lower.includes("remember")){
+
+    const remembered =
+      command
+        .replace(/remember/ig,"")
+        .trim();
+
+
+    if(remembered){
+
+      data.memories.push({
+
+        id:Date.now(),
+
+        text:remembered,
+
+        created:new Date().toISOString()
+
+      });
+
+
+      saveAll();
+
+      renderMemory();
+
+
+      responseBox.textContent =
+        `Got it. I'll remember: ${remembered}`;
+
+
+      speak(
+        `Got it. I'll remember that.`
+      );
+
+      return;
+    }
+
+  }
+
+
+  if(
+    lower.startsWith("add task") ||
+    lower.startsWith("remind me")
+  ){
+
+    let taskText =
+      command
+        .replace(/^add task/i,"")
+        .replace(/^remind me to/i,"")
+        .trim();
+
+
+    if(taskText){
+
+      data.tasks.push({
+
+        id:Date.now(),
+
+        text:taskText,
+
+        created:new Date().toISOString(),
+
+        completed:false
+
+      });
+
+
+      saveAll();
+
+      renderToday();
+
+
+      responseBox.textContent =
+        `Added: ${taskText}`;
+
+
+      speak(
+        `Done. I added that to your tasks.`
+      );
+
+      return;
+    }
+
+  }
+
+
+  if(
+    lower.includes("goal")
+  ){
+
+    data.goals.push({
+
+      id:Date.now(),
+
+      text:command,
+
+      created:new Date().toISOString()
+
+    });
+
+
+    saveAll();
+
+    renderGoals();
+
+
+    responseBox.textContent =
+      "I've added that as a goal.";
+
+
+    speak(
+      "I've added that as a goal."
+    );
+
+    return;
+
+  }
+
+
+  responseBox.textContent =
+    `I heard you say: "${command}". The real AI brain will handle this once we connect the AI API.`;
+
+
+  speak(
+    `I heard you. Once my AI connection is connected, I'll be able to understand that properly and take action for you.`
+  );
+
+}
+
+
+/* ==========================================================
+   NAVIGATION
+========================================================== */
+
+function showHome(){
+
+  updateHome();
+
+}
+
+
+function openGoals(){
+
+  openModal(`
+    <h2>Your Goals</h2>
+    <p style="color:var(--muted)">
+      These are the things LifePilot is helping you move toward.
+    </p>
+    <div id="modalGoals"></div>
+  `);
+
+
+  const box =
+    document.getElementById(
+      "modalGoals"
+    );
+
+
+  if(!data.goals.length){
+
+    box.innerHTML =
+      "<p>No goals yet.</p>";
+
+    return;
+  }
+
+
+  data.goals.forEach(goal=>{
+
+    const div =
+      document.createElement("div");
+
+    div.className =
+      "list-item";
+
+    div.innerHTML =
+      `<span>${escapeHTML(goal.text)}</span>`;
+
+    box.appendChild(div);
+
+  });
+
+}
+
+
+function openMemory(){
+
+  openModal(`
+    <h2>Memory</h2>
+    <p style="color:var(--muted)">
+      Things you've told LifePilot to remember.
+    </p>
+    <div id="modalMemory"></div>
+  `);
+
+
+  const box =
+    document.getElementById(
+      "modalMemory"
+    );
+
+
+  const memories =
+    [...data.memories];
+
+
+  if(profile.remember){
+
+    memories.push({
+      text:profile.remember
+    });
+
+  }
+
+
+  if(!memories.length){
+
+    box.innerHTML =
+      "<p>Nothing stored yet.</p>";
+
+    return;
+  }
+
+
+  memories.forEach(memory=>{
+
+    const div =
+      document.createElement("div");
+
+    div.className =
+      "list-item";
+
+    div.innerHTML =
+      `<span>${escapeHTML(memory.text)}</span>`;
+
+    box.appendChild(div);
+
+  });
+
+}
+
+
+function openSettings(){
+
+  openModal(`
+
+    <h2>LifePilot Settings</h2>
+
+    <div class="form-group">
+      <label>What should I call you?</label>
+      <input id="settingsUserName"
+        value="${escapeAttribute(profile.userName || "")}">
+    </div>
+
+    <div class="form-group">
+      <label>What should you call me?</label>
+      <input id="settingsAssistantName"
+        value="${escapeAttribute(profile.assistantName || "LifePilot")}">
+    </div>
+
+    <div class="form-group">
+      <label>Birthday</label>
+      <input id="settingsBirthday"
+        value="${escapeAttribute(profile.birthday || "")}">
+    </div>
+
+    <div class="form-group">
+      <label>Height</label>
+      <input id="settingsHeight"
+        value="${escapeAttribute(profile.height || "")}">
+    </div>
+
+    <div class="form-group">
+      <label>Weight</label>
+      <input id="settingsWeight"
+        value="${escapeAttribute(profile.weight || "")}">
+    </div>
+
+    <div class="form-group">
+      <label>Clothing / shoe sizes</label>
+      <input id="settingsSizes"
+        value="${escapeAttribute(
+          (profile.clothingSize || "") +
+          (profile.shoeSize ? " / " + profile.shoeSize : "")
+        )}">
+    </div>
+
+    <div class="form-group">
+      <label>Normal schedule</label>
+      <textarea id="settingsSchedule">${escapeHTML(
+        profile.schedule || ""
+      )}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Goals</label>
+      <textarea id="settingsGoals">${escapeHTML(
+        profile.goals || ""
+      )}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Things to remember</label>
+      <textarea id="settingsRemember">${escapeHTML(
+        profile.remember || ""
+      )}</textarea>
+    </div>
+
+    <button
+      class="primary-button"
+      onclick="saveSettings()">
+      Save changes
+    </button>
+
+  `);
+
+}
+
+
+function saveSettings(){
+
+  profile.userName =
+    document.getElementById(
+      "settingsUserName"
+    ).value.trim();
+
+
+  profile.assistantName =
+    document.getElementById(
+      "settingsAssistantName"
+    ).value.trim() || "LifePilot";
+
+
+  profile.birthday =
+    document.getElementById(
+      "settingsBirthday"
+    ).value.trim();
+
+
+  profile.height =
+    document.getElementById(
+      "settingsHeight"
+    ).value.trim();
+
+
+  profile.weight =
+    document.getElementById(
+      "settingsWeight"
+    ).value.trim();
+
+
+  profile.schedule =
+    document.getElementById(
+      "settingsSchedule"
+    ).value.trim();
+
+
+  profile.goals =
+    document.getElementById(
+      "settingsGoals"
+    ).value.trim();
+
+
+  profile.remember =
+    document.getElementById(
+      "settingsRemember"
+    ).value.trim();
+
+
+  saveAll();
+
+  closeModal();
+
+  updateHome();
+
+}
+
+
+/* ==========================================================
+   MODAL
+========================================================== */
+
+function openModal(content){
+
+  document.getElementById(
+    "modalContent"
+  ).innerHTML =
+    content;
+
+
+  document.getElementById(
+    "modal"
+  ).classList.remove("hidden");
+
+}
+
+
+function closeModal(){
+
+  document.getElementById(
+    "modal"
+  ).classList.add("hidden");
+
+}
+
+
+document.getElementById(
+  "modal"
+).addEventListener(
+  "click",
+  function(event){
+
+    if(event.target === this){
+
+      closeModal();
+
+    }
+
+  }
+);
+
+
+/* ==========================================================
+   HELPERS
+========================================================== */
+
+function todayKey(){
+
+  return new Date()
+    .toISOString()
+    .slice(0,10);
+
+}
+
+
+function extractAge(text){
+
+  const match =
+    text.match(
+      /\b(\d{1,3})\b/
+    );
+
+
+  return match
+    ? match[1]
+    : "";
+
+}
+
+
+function calculateAgeFromText(text){
+
+  /*
+    Handles common YYYY-MM-DD style dates.
+    The raw birthday is still stored even when
+    it cannot be interpreted.
+  */
+
+  const match =
+    text.match(
+      /(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/
+    );
+
+
+  if(!match){
+    return "";
+  }
+
+
+  const year =
+    Number(match[1]);
+
+
+  const month =
+    Number(match[2]) - 1;
+
+
+  const day =
+    Number(match[3]);
+
+
+  const birth =
+    new Date(
+      year,
+      month,
+      day
+    );
+
+
+  if(isNaN(birth.getTime())){
+    return "";
+  }
+
+
+  const now =
+    new Date();
+
+
+  let age =
+    now.getFullYear() -
+    birth.getFullYear();
+
+
+  const monthDifference =
+    now.getMonth() -
+    birth.getMonth();
+
+
+  if(
+    monthDifference < 0 ||
+    (
+      monthDifference === 0 &&
+      now.getDate() < birth.getDate()
+    )
+  ){
+
+    age--;
+
+  }
+
+
+  return age > 0
+    ? age
+    : "";
+
+}
+
+
+function extractField(text,keywords){
+
+  const lower =
+    text.toLowerCase();
+
+
+  for(const keyword of keywords){
+
+    const index =
+      lower.indexOf(keyword);
+
+
+    if(index !== -1){
+
+      const piece =
+        text
+          .slice(
+            Math.max(0,index-5),
+            Math.min(
+              text.length,
+              index+35
+            )
+          )
+          .trim();
+
+
+      if(piece){
+        return piece;
+      }
+
+    }
+
+  }
+
+
+  return "";
+
+}
+
+
+function escapeHTML(value){
+
+  return String(value || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+function escapeAttribute(value){
+
+  return escapeHTML(value);
+
+}
+
+
+/* ==========================================================
+   SPEECH VOICE LIST LOADING
+========================================================== */
+
+if(window.speechSynthesis){
+
+  window.speechSynthesis.onvoiceschanged =
+    function(){
+
+      chooseVoice();
+
+    };
+
+}
+
+
+/* ==========================================================
+   EXISTING USER
+========================================================== */
+
+if(profile.userName){
+
+  /*
+    If the user already completed onboarding,
+    we don't force them through it again.
+    They can still access everything normally.
+  */
+
+  startButton.textContent =
+    "Open LifePilot";
+
+}
+
+
+</script>
+
+</body>
+</html>
