@@ -1,10 +1,44 @@
+Yes. That's how we'll do it from now on: you give me the current file, and I give you a complete replacement file you can copy/paste, rather than making you hunt for individual sections.
+I also checked the current APIs before rebuilding this. OpenAI currently recommends the Responses API for new applications, and ElevenLabs supports UK, Australian and Canadian English plus gender/accent voice filtering. �
+OpenAI Developers +2
+This version makes LifePilot substantially more capable:
+🇬🇧 British female/male
+🇦🇺 Australian female/male
+🇨🇦 Canadian female/male
+No American voices
+Real ElevenLabs AI speech
+AI assistant instead of the current keyword-only logic
+Voice commands can create tasks, goals, events and habits
+AI can look at your existing LifePilot information
+"What should I do?"
+"What am I forgetting?"
+"Plan my day"
+"I've got two hours free — what should I work on?"
+"I'm exhausted — what actually needs to get done?"
+Voice selection remembered
+API keys stay on Vercel rather than inside your webpage
+ElevenLabs' current API supports the voice filtering we're using and its TTS endpoint returns generated audio. �
+ElevenLabs +1
+What you're going to have in GitHub
+Your repository should look like this:
+LifePilot/
+│
+├── index.html
+│
+└── api/
+    ├── assistant.js
+    ├── speak.js
+    └── voices.js
+You do not need to install an npm package for this version.
+FILE 1 — index.html
+Delete your current index.html completely and replace it with this:
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="theme-color" content="#4CBB17">
-<meta name="description" content="LifePilot — a personal AI life assistant.">
+<meta name="description" content="LifePilot — your personal AI life assistant.">
 <title>LifePilot</title>
 
 <style>
@@ -22,9 +56,7 @@
   --radius:20px;
 }
 
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 html,body{
   margin:0;
@@ -34,19 +66,9 @@ html,body{
   color:var(--ink);
 }
 
-button,input,textarea,select{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-.hidden{
-  display:none!important;
-}
-
-/* ---------- START SCREEN ---------- */
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
 
 .start-screen{
   position:fixed;
@@ -105,12 +127,6 @@ button{
   box-shadow:0 12px 30px rgba(0,0,0,.16);
 }
 
-.start-button:active{
-  transform:scale(.98);
-}
-
-/* ---------- ONBOARDING ---------- */
-
 .onboarding{
   position:fixed;
   inset:0;
@@ -134,17 +150,20 @@ button{
   margin-bottom:25px;
 }
 
-.mini-logo{
-  width:50px;
-  height:50px;
-  border-radius:16px;
+.mini-logo,.brand-logo{
   background:var(--green);
   color:white;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:26px;
   font-weight:900;
+}
+
+.mini-logo{
+  width:50px;
+  height:50px;
+  border-radius:16px;
+  font-size:26px;
 }
 
 .progress{
@@ -175,27 +194,20 @@ button{
   margin:0 0 10px;
 }
 
-.question-card .question{
+.question{
   color:var(--muted);
   font-size:16px;
   line-height:1.55;
   margin-bottom:20px;
 }
 
-.field{
-  margin:15px 0;
-}
+.field{margin:15px 0}
 
 .field label{
   display:block;
   font-weight:700;
   font-size:13px;
   margin-bottom:6px;
-}
-
-.optional{
-  color:var(--muted);
-  font-weight:400;
 }
 
 input,textarea,select{
@@ -235,8 +247,6 @@ textarea{
   margin-top:22px;
 }
 
-/* ---------- BUTTONS ---------- */
-
 .btn{
   border:1px solid var(--line);
   background:white;
@@ -246,9 +256,7 @@ textarea{
   font-weight:700;
 }
 
-.btn:hover{
-  border-color:var(--green);
-}
+.btn:hover{border-color:var(--green)}
 
 .btn.primary{
   background:var(--green);
@@ -256,17 +264,10 @@ textarea{
   border-color:var(--green);
 }
 
-.btn.primary:hover{
-  background:var(--green-dark);
-}
+.btn.primary:hover{background:var(--green-dark)}
 
-.btn.danger{
-  color:var(--danger);
-}
-
-.btn.full{
-  width:100%;
-}
+.btn.danger{color:var(--danger)}
+.btn.full{width:100%}
 
 .icon-btn{
   width:42px;
@@ -276,11 +277,7 @@ textarea{
   background:white;
 }
 
-/* ---------- APP ---------- */
-
-.app{
-  min-height:100vh;
-}
+.app{min-height:100vh}
 
 .top{
   position:sticky;
@@ -306,13 +303,7 @@ textarea{
   width:42px;
   height:42px;
   border-radius:13px;
-  background:var(--green);
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
   font-size:22px;
-  font-weight:900;
 }
 
 .brand h1{
@@ -337,8 +328,6 @@ textarea{
   width:min(1200px,calc(100% - 28px));
   margin:20px auto 50px;
 }
-
-/* ---------- ASSISTANT ---------- */
 
 .assistant-card{
   background:
@@ -412,17 +401,11 @@ textarea{
   font-weight:800;
 }
 
-.listening{
-  animation:pulse 1.1s infinite;
-}
+.listening{animation:pulse 1.1s infinite}
 
 @keyframes pulse{
-  50%{
-    transform:scale(1.04);
-  }
+  50%{transform:scale(1.04)}
 }
-
-/* ---------- MISSION ---------- */
 
 .mission{
   background:white;
@@ -456,8 +439,6 @@ textarea{
   flex-wrap:wrap;
 }
 
-/* ---------- GRID ---------- */
-
 .grid{
   display:grid;
   grid-template-columns:minmax(0,2fr) minmax(290px,1fr);
@@ -473,17 +454,13 @@ textarea{
   margin-bottom:18px;
 }
 
-.card h3{
-  margin:0 0 14px;
-}
+.card h3{margin:0 0 14px}
 
 .sub{
   color:var(--muted);
   font-size:13px;
   line-height:1.5;
 }
-
-/* ---------- TASKS ---------- */
 
 .item{
   display:flex;
@@ -493,9 +470,7 @@ textarea{
   border-bottom:1px solid #EDF1EC;
 }
 
-.item:last-child{
-  border-bottom:0;
-}
+.item:last-child{border-bottom:0}
 
 .check{
   width:27px;
@@ -543,8 +518,6 @@ textarea{
   font-size:17px;
 }
 
-/* ---------- QUICK ---------- */
-
 .quick{
   display:grid;
   grid-template-columns:repeat(2,1fr);
@@ -570,8 +543,6 @@ textarea{
   font-size:12px;
 }
 
-/* ---------- STATS ---------- */
-
 .stats{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -596,20 +567,14 @@ textarea{
   font-size:11px;
 }
 
-/* ---------- GOALS ---------- */
-
 .goal{
   padding:13px 0;
   border-bottom:1px solid #EDF1EC;
 }
 
-.goal:last-child{
-  border-bottom:0;
-}
+.goal:last-child{border-bottom:0}
 
-.goal-title{
-  font-weight:700;
-}
+.goal-title{font-weight:700}
 
 .progress-track{
   height:8px;
@@ -624,18 +589,12 @@ textarea{
   background:var(--green);
 }
 
-/* ---------- PATTERNS ---------- */
-
 .insight{
   border:1px solid var(--line);
   border-radius:16px;
   padding:15px;
   margin-bottom:10px;
   background:#FBFDF9;
-}
-
-.insight:last-child{
-  margin-bottom:0;
 }
 
 .insight-tag{
@@ -646,9 +605,7 @@ textarea{
   text-transform:uppercase;
 }
 
-.insight h4{
-  margin:6px 0;
-}
+.insight h4{margin:6px 0}
 
 .insight p{
   color:var(--muted);
@@ -665,8 +622,6 @@ textarea{
   font-size:12px;
 }
 
-/* ---------- MEMORY ---------- */
-
 .memory-list{
   display:flex;
   flex-wrap:wrap;
@@ -681,8 +636,6 @@ textarea{
   font-size:12px;
 }
 
-/* ---------- MODAL ---------- */
-
 .modal{
   position:fixed;
   inset:0;
@@ -694,12 +647,10 @@ textarea{
   padding:16px;
 }
 
-.modal.open{
-  display:flex;
-}
+.modal.open{display:flex}
 
 .modal-box{
-  width:min(580px,100%);
+  width:min(600px,100%);
   max-height:90vh;
   overflow:auto;
   background:white;
@@ -715,9 +666,7 @@ textarea{
   gap:10px;
 }
 
-.modal-head h2{
-  margin:0;
-}
+.modal-head h2{margin:0}
 
 .modal-actions{
   display:flex;
@@ -727,69 +676,108 @@ textarea{
   flex-wrap:wrap;
 }
 
-/* ---------- EMPTY ---------- */
-
 .empty{
   padding:20px 5px;
   color:var(--muted);
   font-size:14px;
 }
 
-/* ---------- MOBILE ---------- */
+.voice-settings{
+  background:var(--green-pale);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:15px;
+  margin-top:12px;
+}
+
+.voice-settings h4{
+  margin:0 0 6px;
+}
+
+.voice-settings p{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.45;
+  margin:0 0 12px;
+}
+
+.voice-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.voice-option{
+  border:1px solid var(--line);
+  background:white;
+  border-radius:13px;
+  padding:12px;
+  text-align:left;
+}
+
+.voice-option.selected{
+  border:2px solid var(--green);
+  background:var(--green-light);
+}
+
+.voice-option strong{display:block}
+
+.voice-option span{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:3px;
+}
+
+.voice-test{
+  width:100%;
+  margin-top:10px;
+}
+
+.ai-message{
+  margin-top:12px;
+  background:rgba(255,255,255,.12);
+  border-radius:15px;
+  padding:13px;
+  line-height:1.5;
+}
+
+.ai-action{
+  background:white;
+  color:var(--ink);
+  border-radius:12px;
+  padding:10px;
+  margin-top:7px;
+  font-size:13px;
+}
 
 @media(max-width:800px){
-  .grid{
-    grid-template-columns:1fr;
-  }
-
-  .top{
-    align-items:flex-start;
-  }
-
-  .top-actions .optional-desktop{
-    display:none;
-  }
+  .grid{grid-template-columns:1fr}
 }
 
 @media(max-width:560px){
-  .start-box h1{
-    font-size:37px;
-  }
-
-  .assistant-card h2{
-    font-size:23px;
-  }
-
-  .quick{
-    grid-template-columns:1fr;
-  }
-
-  .top-actions{
-    gap:4px;
-  }
-
+  .start-box h1{font-size:37px}
+  .assistant-card h2{font-size:23px}
+  .quick{grid-template-columns:1fr}
+  .top-actions{gap:4px}
   .top-actions .btn{
     padding:9px 10px;
     font-size:12px;
   }
-
-  .question-card{
-    padding:20px;
-  }
+  .question-card{padding:20px}
+  .voice-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 
 <body>
 
-<!-- ================= START SCREEN ================= -->
-
 <div id="startScreen" class="start-screen">
   <div class="start-box">
     <div class="start-logo">✓</div>
     <h1>Meet LifePilot</h1>
     <p>
-      Your personal life assistant.
+      Your personal AI life assistant.
       Tell it what's going on and let it help organize what matters.
     </p>
     <p style="font-size:14px">
@@ -800,9 +788,6 @@ textarea{
     </button>
   </div>
 </div>
-
-
-<!-- ================= ONBOARDING ================= -->
 
 <div id="onboarding" class="onboarding hidden">
   <div class="onboarding-inner">
@@ -816,304 +801,258 @@ textarea{
     </div>
 
     <div class="question-card">
-
       <h1 id="setupTitle">Let's get acquainted.</h1>
-
-      <div id="setupQuestion" class="question">
-        You can answer anything you want. Everything is optional.
-      </div>
-
+      <div id="setupQuestion" class="question"></div>
       <div id="setupFields"></div>
-
       <div id="setupExamples" class="examples hidden"></div>
 
       <div class="onboarding-actions">
         <button id="backSetup" class="btn" onclick="previousSetup()">Back</button>
         <button id="nextSetup" class="btn primary" onclick="nextSetup()">Continue</button>
       </div>
-
     </div>
+
   </div>
 </div>
 
-
-<!-- ================= MAIN APP ================= -->
-
 <div id="app" class="app hidden">
 
-  <header class="top">
+<header class="top">
 
-    <div class="brand">
-      <div class="brand-logo">✓</div>
-      <div>
-        <h1>LifePilot</h1>
-        <p id="brandSub">Your personal life assistant.</p>
-      </div>
+  <div class="brand">
+    <div class="brand-logo">✓</div>
+    <div>
+      <h1>LifePilot</h1>
+      <p id="brandSub">Your personal life assistant.</p>
     </div>
+  </div>
 
-    <div class="top-actions">
-      <button class="btn optional-desktop" onclick="speakCurrentMission()">🔊 Speak</button>
-      <button class="btn" onclick="openAddTask()">＋ Add</button>
-      <button class="btn" onclick="openSettings()">⚙️</button>
+  <div class="top-actions">
+    <button class="btn" onclick="speakCurrentMission()">🔊 Speak</button>
+    <button class="btn" onclick="openAddTask()">＋ Add</button>
+    <button class="btn" onclick="openSettings()">⚙️</button>
+  </div>
+
+</header>
+
+<main class="container">
+
+<section class="assistant-card">
+
+  <div class="assistant-head">
+    <div class="orb">✦</div>
+
+    <div>
+      <h2 id="assistantGreeting">Hi. I'm LifePilot.</h2>
+      <p id="assistantSub">Tell me what's going on.</p>
     </div>
+  </div>
 
-  </header>
+  <div id="assistantStatus" class="assistant-status">
+    Ready when you are.
+  </div>
 
+  <div id="assistantTranscript" class="assistant-transcript">
+    Tap the microphone or type below.
+  </div>
 
-  <main class="container">
+  <div class="assistant-controls">
 
-    <!-- ASSISTANT -->
+    <button id="voiceButton"
+            class="speak-button"
+            onclick="toggleVoice()">
+      🎙️ Talk to me
+    </button>
 
-    <section class="assistant-card">
+    <button class="speak-button"
+            onclick="speakLastResponse()">
+      🔊 Speak
+    </button>
 
-      <div class="assistant-head">
-        <div class="orb">✦</div>
-        <div>
-          <h2 id="assistantGreeting">Hi. I'm LifePilot.</h2>
-          <p id="assistantSub">
-            Tell me what's going on.
-          </p>
-        </div>
-      </div>
+  </div>
 
-      <div id="assistantStatus" class="assistant-status">
-        Ready when you are.
-      </div>
+</section>
 
-      <div id="assistantTranscript" class="assistant-transcript">
-        Tap the microphone or type below.
-      </div>
+<section class="mission">
 
-      <div class="assistant-controls">
+  <div class="mission-label">YOUR 18-HOUR MISSION</div>
 
-        <button id="voiceButton"
-                class="speak-button"
-                onclick="toggleVoice()">
-          🎙️ Talk to me
-        </button>
+  <h2 id="missionTitle">
+    Start by telling LifePilot what matters today.
+  </h2>
 
-        <button class="speak-button" onclick="speakCurrentMission()">
-          🔊 Speak
-        </button>
+  <p id="missionDescription">
+    Your mission should be one meaningful action you can realistically complete.
+  </p>
 
-      </div>
+  <div class="mission-actions">
 
-    </section>
+    <button class="btn primary" onclick="completeMission()">
+      ✓ I did it
+    </button>
 
+    <button class="btn" onclick="newMission()">
+      🔄 New mission
+    </button>
 
-    <!-- MISSION -->
+    <button class="btn" onclick="speakCurrentMission()">
+      🔊 Hear it
+    </button>
 
-    <section class="mission">
+  </div>
 
-      <div class="mission-label">
-        YOUR 18-HOUR MISSION
-      </div>
+</section>
 
-      <h2 id="missionTitle">
-        Start by telling LifePilot what matters today.
-      </h2>
+<div class="grid">
 
-      <p id="missionDescription">
-        Your mission should be one meaningful action you can realistically complete.
-      </p>
+<div>
 
-      <div class="mission-actions">
-        <button class="btn primary" onclick="completeMission()">
-          ✓ I did it
-        </button>
+<section class="card">
+  <h3>Today's plan</h3>
+  <div id="taskList"></div>
+</section>
 
-        <button class="btn" onclick="newMission()">
-          🔄 New mission
-        </button>
+<section class="card">
 
-        <button class="btn" onclick="speakCurrentMission()">
-          🔊 Hear it
-        </button>
-      </div>
+  <h3>Quick add</h3>
 
-    </section>
+  <div class="quick">
 
+    <button onclick="openAddTask()">
+      📝
+      <b>Task</b>
+      <span>Something you need to do</span>
+    </button>
 
-    <div class="grid">
+    <button onclick="openAddEvent()">
+      📅
+      <b>Event</b>
+      <span>Appointment or commitment</span>
+    </button>
 
-      <div>
+    <button onclick="openAddHabit()">
+      🔁
+      <b>Habit</b>
+      <span>Something you want to repeat</span>
+    </button>
 
-        <!-- TODAY -->
+    <button onclick="openAddGoal()">
+      🎯
+      <b>Goal</b>
+      <span>Something bigger you're working toward</span>
+    </button>
 
-        <section class="card">
+  </div>
 
-          <h3>Today's plan</h3>
+</section>
 
-          <div id="taskList"></div>
+<section class="card">
 
-        </section>
+  <h3>Tell LifePilot</h3>
 
+  <p class="sub">
+    Talk naturally. You don't have to know which category something belongs in.
+  </p>
 
-        <!-- QUICK ADD -->
+  <textarea
+    id="naturalInput"
+    placeholder="Try: I've got three hours free tomorrow afternoon. What should I work on?">
+  </textarea>
 
-        <section class="card">
+  <button class="btn primary full"
+          style="margin-top:10px"
+          onclick="processNaturalInput()">
+    Ask LifePilot
+  </button>
 
-          <h3>Quick add</h3>
+</section>
 
-          <div class="quick">
+<section class="card">
 
-            <button onclick="openAddTask()">
-              📝
-              <b>Task</b>
-              <span>Something you need to do</span>
-            </button>
+  <h3>🧠 I noticed something...</h3>
 
-            <button onclick="openAddEvent()">
-              📅
-              <b>Event</b>
-              <span>Appointment or commitment</span>
-            </button>
+  <p class="sub">
+    LifePilot looks for useful patterns in what you tell it and what you actually do.
+  </p>
 
-            <button onclick="openAddHabit()">
-              🔁
-              <b>Habit</b>
-              <span>Something you want to repeat</span>
-            </button>
+  <div id="patternList"></div>
 
-            <button onclick="openAddGoal()">
-              🎯
-              <b>Goal</b>
-              <span>Something bigger you're working toward</span>
-            </button>
-
-          </div>
-
-        </section>
-
-
-        <!-- TELL LIFE PILOT -->
-
-        <section class="card">
-
-          <h3>Tell LifePilot</h3>
-
-          <p class="sub">
-            Talk naturally. You don't have to know which category something belongs in.
-          </p>
-
-          <textarea
-            id="naturalInput"
-            placeholder="Try: I need to call the insurance company tomorrow, and I really need to clean my garage this week.">
-          </textarea>
-
-          <button
-            class="btn primary full"
-            style="margin-top:10px"
-            onclick="processNaturalInput()">
-            Add this to my life
-          </button>
-
-        </section>
-
-
-        <!-- PATTERNS -->
-
-        <section class="card">
-
-          <h3>🧠 I noticed something...</h3>
-
-          <p class="sub">
-            LifePilot looks for recurring patterns in what you tell it and what you actually do.
-          </p>
-
-          <div id="patternList"></div>
-
-        </section>
-
-      </div>
-
-
-      <aside>
-
-        <!-- STATS -->
-
-        <section class="card">
-
-          <h3>Life at a glance</h3>
-
-          <div class="stats">
-
-            <div class="stat">
-              <b id="openCount">0</b>
-              <span>Things left</span>
-            </div>
-
-            <div class="stat">
-              <b id="doneCount">0</b>
-              <span>Completed</span>
-            </div>
-
-            <div class="stat">
-              <b id="goalCount">0</b>
-              <span>Goals</span>
-            </div>
-
-          </div>
-
-        </section>
-
-
-        <!-- GOALS -->
-
-        <section class="card">
-
-          <h3>Goals</h3>
-
-          <div id="goalList"></div>
-
-        </section>
-
-
-        <!-- MEMORY -->
-
-        <section class="card">
-
-          <h3>What I remember</h3>
-
-          <p class="sub">
-            Things you've chosen to tell LifePilot.
-          </p>
-
-          <div id="memoryList" class="memory-list"></div>
-
-          <button class="btn full" style="margin-top:12px" onclick="openMemory()">
-            Manage memory
-          </button>
-
-        </section>
-
-
-        <!-- PLAN -->
-
-        <section class="card">
-
-          <h3>Plan my day</h3>
-
-          <p class="sub">
-            Let LifePilot turn what's on your plate into a smaller plan.
-          </p>
-
-          <button class="btn primary full" onclick="planDay()">
-            Build today's plan
-          </button>
-
-        </section>
-
-      </aside>
-
-    </div>
-
-  </main>
+</section>
 
 </div>
 
+<aside>
 
-<!-- ================= MODAL ================= -->
+<section class="card">
+
+  <h3>Life at a glance</h3>
+
+  <div class="stats">
+
+    <div class="stat">
+      <b id="openCount">0</b>
+      <span>Things left</span>
+    </div>
+
+    <div class="stat">
+      <b id="doneCount">0</b>
+      <span>Completed</span>
+    </div>
+
+    <div class="stat">
+      <b id="goalCount">0</b>
+      <span>Goals</span>
+    </div>
+
+  </div>
+
+</section>
+
+<section class="card">
+
+  <h3>Goals</h3>
+  <div id="goalList"></div>
+
+</section>
+
+<section class="card">
+
+  <h3>What I remember</h3>
+
+  <p class="sub">
+    Things you've chosen to tell LifePilot.
+  </p>
+
+  <div id="memoryList" class="memory-list"></div>
+
+  <button class="btn full"
+          style="margin-top:12px"
+          onclick="openMemory()">
+    Manage memory
+  </button>
+
+</section>
+
+<section class="card">
+
+  <h3>Plan my day</h3>
+
+  <p class="sub">
+    Let LifePilot look at what's on your plate and help decide what actually matters.
+  </p>
+
+  <button class="btn primary full"
+          onclick="askAI('Plan my day for me.')">
+    Build today's plan
+  </button>
+
+</section>
+
+</aside>
+
+</div>
+</main>
+</div>
 
 <div id="modal" class="modal" onclick="closeModalOutside(event)">
 
@@ -1121,7 +1060,7 @@ textarea{
 
     <div class="modal-head">
 
-      <h2 id="modalTitle">Add something</h2>
+      <h2 id="modalTitle">LifePilot</h2>
 
       <button class="icon-btn" onclick="closeModal()">✕</button>
 
@@ -1133,26 +1072,27 @@ textarea{
 
 </div>
 
-
 <script>
 
 /* ============================================================
-   LIFE PILOT
-   Local-first prototype
+   LIFE PILOT 2.0
    ============================================================ */
 
-const PROFILE_KEY = "lifepilot_profile_v4";
-const DATA_KEY = "lifepilot_data_v4";
+const PROFILE_KEY="lifepilot_profile_v5";
+const DATA_KEY="lifepilot_data_v5";
+const VOICE_KEY="lifepilot_voice_v2";
 
-let profile = loadProfile();
+let profile=loadProfile();
+let data=loadData();
 
-let data = loadData();
-
-let setupStep = 0;
-
-let voiceRecognition = null;
-
-let voiceListening = false;
+let setupStep=0;
+let voiceRecognition=null;
+let voiceListening=false;
+let availableVoices=[];
+let selectedVoice=loadVoice();
+let currentAudio=null;
+let voiceAudioUrl=null;
+let lastAIResponse="";
 
 
 /* ============================================================
@@ -1162,7 +1102,10 @@ let voiceListening = false;
 function loadProfile(){
 
   try{
-    return JSON.parse(localStorage.getItem(PROFILE_KEY)) || {
+
+    return JSON.parse(
+      localStorage.getItem(PROFILE_KEY)
+    ) || {
       assistantName:"",
       userName:"",
       birthday:"",
@@ -1176,9 +1119,13 @@ function loadProfile(){
       remember:"",
       usefulness:""
     };
+
   }catch(e){
+
     return {};
+
   }
+
 }
 
 
@@ -1186,7 +1133,9 @@ function loadData(){
 
   try{
 
-    return JSON.parse(localStorage.getItem(DATA_KEY)) || {
+    return JSON.parse(
+      localStorage.getItem(DATA_KEY)
+    ) || {
       tasks:[],
       goals:[],
       habits:[],
@@ -1237,6 +1186,43 @@ function saveData(){
 }
 
 
+function loadVoice(){
+
+  try{
+
+    return JSON.parse(
+      localStorage.getItem(VOICE_KEY)
+    ) || {
+      accent:"British",
+      gender:"female",
+      voiceId:"",
+      name:"British Female"
+    };
+
+  }catch(e){
+
+    return {
+      accent:"British",
+      gender:"female",
+      voiceId:"",
+      name:"British Female"
+    };
+
+  }
+
+}
+
+
+function saveVoice(){
+
+  localStorage.setItem(
+    VOICE_KEY,
+    JSON.stringify(selectedVoice)
+  );
+
+}
+
+
 /* ============================================================
    UTILITIES
    ============================================================ */
@@ -1255,14 +1241,16 @@ function esc(value){
 
 function uid(){
 
-  return Date.now() + Math.floor(Math.random()*10000);
+  return Date.now()+Math.floor(Math.random()*10000);
 
 }
 
 
 function today(){
 
-  return new Date().toISOString().slice(0,10);
+  return new Date()
+    .toISOString()
+    .slice(0,10);
 
 }
 
@@ -1277,9 +1265,9 @@ function logActivity(type,text,extra={}){
     ...extra
   });
 
-  if(data.activity.length > 500){
+  if(data.activity.length>500){
 
-    data.activity =
+    data.activity=
       data.activity.slice(-500);
 
   }
@@ -1287,48 +1275,384 @@ function logActivity(type,text,extra={}){
 }
 
 
-function speak(text){
+/* ============================================================
+   VOICE ENGINE
+   ============================================================ */
 
-  if(!text) return;
+async function speak(text){
 
-  if(!("speechSynthesis" in window)){
+  if(!text)return;
+
+  stopSpeaking();
+
+  if(selectedVoice.voiceId){
+
+    try{
+
+      const response=
+        await fetch("/api/speak",{
+
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:JSON.stringify({
+            text:text.slice(0,3000),
+            voiceId:selectedVoice.voiceId
+          })
+
+        });
+
+      if(response.ok){
+
+        const blob=
+          await response.blob();
+
+        voiceAudioUrl=
+          URL.createObjectURL(blob);
+
+        currentAudio=
+          new Audio(voiceAudioUrl);
+
+        await currentAudio.play();
+
+        return;
+
+      }
+
+    }catch(error){
+
+      console.warn(
+        "AI voice failed:",
+        error
+      );
+
+    }
+
+  }
+
+  speakBrowser(text);
+
+}
+
+
+function speakBrowser(text){
+
+  if(!("speechSynthesis" in window))return;
+
+  const utterance=
+    new SpeechSynthesisUtterance(text);
+
+  utterance.rate=.96;
+
+  utterance.pitch=
+    selectedVoice.gender==="male"
+      ? .9
+      : 1.04;
+
+  utterance.lang=
+    selectedVoice.accent==="Australian"
+      ? "en-AU"
+      : selectedVoice.accent==="Canadian"
+        ? "en-CA"
+        : "en-GB";
+
+  const voices=
+    speechSynthesis.getVoices();
+
+  const preferred=
+    voices.find(v=>{
+
+      const lang=
+        v.lang.toLowerCase();
+
+      const name=
+        v.name.toLowerCase();
+
+      if(selectedVoice.accent==="Australian"){
+
+        return (
+          lang==="en-au" ||
+          name.includes("australian")
+        );
+
+      }
+
+      if(selectedVoice.accent==="Canadian"){
+
+        return (
+          lang==="en-ca" ||
+          name.includes("canada")
+        );
+
+      }
+
+      return (
+        lang==="en-gb" ||
+        name.includes("british") ||
+        name.includes("uk")
+      );
+
+    });
+
+  if(preferred)
+    utterance.voice=preferred;
+
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utterance);
+
+}
+
+
+function stopSpeaking(){
+
+  if("speechSynthesis" in window)
+    speechSynthesis.cancel();
+
+  if(currentAudio){
+
+    currentAudio.pause();
+    currentAudio=null;
+
+  }
+
+  if(voiceAudioUrl){
+
+    URL.revokeObjectURL(
+      voiceAudioUrl
+    );
+
+    voiceAudioUrl=null;
+
+  }
+
+}
+
+
+async function speakLastResponse(){
+
+  if(lastAIResponse){
+
+    await speak(lastAIResponse);
+
+  }else{
+
+    await speak(
+      "I'm ready. Tell me what's going on."
+    );
+
+  }
+
+}
+
+
+async function loadAvailableVoices(){
+
+  try{
+
+    const response=
+      await fetch("/api/voices");
+
+    if(!response.ok)
+      throw new Error("Voice API failed");
+
+    const result=
+      await response.json();
+
+    availableVoices=
+      result.voices||[];
+
+    if(!selectedVoice.voiceId){
+
+      const preferred=
+        availableVoices.find(
+          v =>
+            v.accent==="British" &&
+            v.gender==="female"
+        );
+
+      if(preferred){
+
+        selectedVoice={
+          accent:preferred.accent,
+          gender:preferred.gender,
+          voiceId:preferred.voice_id,
+          name:preferred.name
+        };
+
+        saveVoice();
+
+      }
+
+    }
+
+    renderVoiceSettings();
+
+  }catch(error){
+
+    console.warn(error);
+
+    renderVoiceSettings();
+
+  }
+
+}
+
+
+function renderVoiceSettings(){
+
+  const box=
+    document.getElementById(
+      "voiceSettingsArea"
+    );
+
+  if(!box)return;
+
+  if(!availableVoices.length){
+
+    box.innerHTML=`
+
+      <div class="voice-settings">
+
+        <h4>🎙️ Assistant voice</h4>
+
+        <p>
+          The high-quality voice service is not connected yet.
+          LifePilot will use your device's English voice as a fallback.
+        </p>
+
+        <button class="btn voice-test"
+                onclick="testVoice()">
+          ▶ Test voice
+        </button>
+
+      </div>
+
+    `;
 
     return;
 
   }
 
-  window.speechSynthesis.cancel();
+  const order=[
+    ["British","female","🇬🇧 Female — British"],
+    ["British","male","🇬🇧 Male — British"],
+    ["Australian","female","🇦🇺 Female — Australian"],
+    ["Australian","male","🇦🇺 Male — Australian"],
+    ["Canadian","female","🇨🇦 Female — Canadian"],
+    ["Canadian","male","🇨🇦 Male — Canadian"]
+  ];
 
-  const utterance =
-    new SpeechSynthesisUtterance(text);
+  const buttons=[];
 
-  utterance.lang = "en-CA";
+  order.forEach(([accent,gender,label])=>{
 
-  utterance.rate = .96;
+    const voice=
+      availableVoices.find(
+        v =>
+          v.accent===accent &&
+          v.gender===gender
+      );
 
-  utterance.pitch = 1;
+    if(!voice)return;
 
-  window.speechSynthesis.speak(utterance);
+    const selected=
+      selectedVoice.voiceId===
+      voice.voice_id;
+
+    buttons.push(`
+
+      <button
+        class="voice-option ${selected?"selected":""}"
+        onclick="selectVoice(
+          '${esc(voice.voice_id)}',
+          '${accent}',
+          '${gender}',
+          '${esc(voice.name)}'
+        )">
+
+        <strong>${label}</strong>
+
+        <span>${esc(voice.name)}</span>
+
+      </button>
+
+    `);
+
+  });
+
+  box.innerHTML=`
+
+    <div class="voice-settings">
+
+      <h4>🎙️ Assistant voice</h4>
+
+      <p>
+        Choose how LifePilot sounds.
+        American voices are intentionally excluded.
+        Tap a voice to hear it.
+      </p>
+
+      <div class="voice-grid">
+        ${buttons.join("")}
+      </div>
+
+      <button class="btn voice-test"
+              onclick="testVoice()">
+        ▶ Test selected voice
+      </button>
+
+    </div>
+
+  `;
+
+}
+
+
+function selectVoice(
+  voiceId,
+  accent,
+  gender,
+  name
+){
+
+  selectedVoice={
+    voiceId,
+    accent,
+    gender,
+    name
+  };
+
+  saveVoice();
+
+  renderVoiceSettings();
+
+  testVoice();
+
+}
+
+
+function testVoice(){
+
+  speak(
+    "Hi. I'm LifePilot. This is the voice you've selected. You can change me whenever you want."
+  );
 
 }
 
 
 /* ============================================================
-   STARTUP
+   START
    ============================================================ */
 
 function startLifePilot(){
 
-  const screen =
-    document.getElementById("startScreen");
-
-  screen.classList.add("hidden");
-
-  /*
-    This click is the important browser interaction.
-    It gives speechSynthesis a much better chance of being
-    allowed on Android/Chrome.
-  */
+  document
+    .getElementById("startScreen")
+    .classList.add("hidden");
 
   speak(
     "Hi. I'm LifePilot. I'm glad you're here. Let's get to know each other."
@@ -1336,17 +1660,12 @@ function startLifePilot(){
 
   setTimeout(()=>{
 
-    if(!profile.userName){
-
+    if(!profile.userName)
       beginOnboarding();
-
-    }else{
-
+    else
       showApp();
 
-    }
-
-  },1800);
+  },1400);
 
 }
 
@@ -1362,14 +1681,10 @@ function showApp(){
     .classList.remove("hidden");
 
   updateIdentity();
-
   renderAll();
 
-  if(!data.missions.length){
-
+  if(!data.missions.length)
     createMission();
-
-  }
 
 }
 
@@ -1380,8 +1695,7 @@ function beginOnboarding(){
     .getElementById("onboarding")
     .classList.remove("hidden");
 
-  setupStep = 0;
-
+  setupStep=0;
   renderSetup();
 
 }
@@ -1389,14 +1703,13 @@ function beginOnboarding(){
 
 function skipOnboarding(){
 
-  profile.userName =
-    profile.userName || "there";
+  profile.userName=
+    profile.userName||"there";
 
-  profile.assistantName =
-    profile.assistantName || "LifePilot";
+  profile.assistantName=
+    profile.assistantName||"LifePilot";
 
   saveProfile();
-
   showApp();
 
   speak(
@@ -1408,25 +1721,25 @@ function skipOnboarding(){
 
 function updateIdentity(){
 
-  const assistant =
-    profile.assistantName || "LifePilot";
+  const assistant=
+    profile.assistantName||"LifePilot";
 
-  const user =
-    profile.userName || "there";
+  const user=
+    profile.userName||"there";
 
   document.getElementById(
     "assistantGreeting"
-  ).textContent =
+  ).textContent=
     `Hi ${user}. I'm ${assistant}.`;
 
   document.getElementById(
     "assistantSub"
-  ).textContent =
+  ).textContent=
     "Tell me what's going on. I'll help organize the next step.";
 
   document.getElementById(
     "brandSub"
-  ).textContent =
+  ).textContent=
     `Your personal assistant, ${assistant}.`;
 
 }
@@ -1436,7 +1749,7 @@ function updateIdentity(){
    ONBOARDING
    ============================================================ */
 
-const setupSteps = [
+const setupSteps=[
 
   {
     title:"First things first.",
@@ -1468,7 +1781,7 @@ const setupSteps = [
 
   {
     title:"A little about you.",
-    question:"Birthday and age are optional. If you provide your birthday, LifePilot can work out your age later.",
+    question:"Birthday and age are optional.",
     fields:[
       {
         id:"birthday",
@@ -1487,19 +1800,19 @@ const setupSteps = [
 
   {
     title:"Useful details.",
-    question:"These can help with things like shopping, clothing, fitness planning, and recommendations. All optional.",
+    question:"These can help with recommendations. All optional.",
     fields:[
       {
         id:"height",
         label:"Height",
         type:"text",
-        placeholder:"Example: 5'10 or 178 cm"
+        placeholder:"Example: 178 cm"
       },
       {
         id:"weight",
         label:"Weight",
         type:"text",
-        placeholder:"Example: 175 lb or 80 kg"
+        placeholder:"Example: 80 kg"
       },
       {
         id:"clothes",
@@ -1513,36 +1826,36 @@ const setupSteps = [
 
   {
     title:"How does your life normally work?",
-    question:"Tell me about your normal schedule, work hours, mornings, evenings, or anything that affects your available time.",
+    question:"Tell me about your normal schedule and available time.",
     fields:[
       {
         id:"schedule",
         label:"Your normal schedule",
         type:"textarea",
-        placeholder:"Example: I usually work 8–5, evenings are more flexible, weekends vary..."
+        placeholder:"Example: I work 8–5 and evenings vary..."
       }
     ],
-    examples:"You don't have to describe everything. A few useful details are enough."
+    examples:"A few useful details are enough."
   },
 
   {
     title:"What are you working toward?",
-    question:"Tell me about things you'd like to accomplish. They can be practical, personal, creative, financial, social, or completely different.",
+    question:"Tell me about things you'd like to accomplish.",
     fields:[
       {
         id:"vision",
         label:"What would you like your life to look like?",
         type:"textarea",
-        placeholder:"Example: Build my own business, get my garage organized, travel more..."
+        placeholder:"Your bigger picture..."
       },
       {
         id:"goalsText",
         label:"Current goals",
         type:"textarea",
-        placeholder:"Example: Save money, finish a project, learn something, reconnect with someone..."
+        placeholder:"Things you're working toward..."
       }
     ],
-    examples:"Don't worry about making them perfect. LifePilot can help turn vague goals into concrete next steps."
+    examples:"Don't worry about making them perfect."
   },
 
   {
@@ -1553,24 +1866,24 @@ const setupSteps = [
         id:"remember",
         label:"Things to remember",
         type:"textarea",
-        placeholder:"Preferences, routines, important details, things you care about..."
+        placeholder:"Preferences, routines, important details..."
       }
     ],
-    examples:"For example: I work better in the morning. I hate being rushed. I like hands-on projects."
+    examples:"Only store things you actually want remembered."
   },
 
   {
     title:"What would make LifePilot genuinely useful?",
-    question:"Imagine this assistant actually understood your life. What would you want it to help you with?",
+    question:"Imagine this assistant actually understood your life. What would you want it to help with?",
     fields:[
       {
         id:"usefulness",
         label:"What would make this useful?",
         type:"textarea",
-        placeholder:"Example: Help me stop forgetting things, help organize projects, keep me accountable..."
+        placeholder:"What would make LifePilot valuable to you?"
       }
     ],
-    examples:"There are no wrong answers. This helps shape what LifePilot becomes for you."
+    examples:"There are no wrong answers."
   }
 
 ];
@@ -1578,27 +1891,24 @@ const setupSteps = [
 
 function renderSetup(){
 
-  const step =
+  const step=
     setupSteps[setupStep];
 
   document.getElementById(
     "setupTitle"
-  ).textContent =
-    step.title;
+  ).textContent=step.title;
 
   document.getElementById(
     "setupQuestion"
-  ).textContent =
-    step.question;
+  ).textContent=step.question;
 
-  const fields =
-    document.getElementById("setupFields");
-
-  fields.innerHTML =
+  document.getElementById(
+    "setupFields"
+  ).innerHTML=
     step.fields.map(field=>{
 
-      const value =
-        profile[field.id] || "";
+      const value=
+        profile[field.id]||"";
 
       if(field.type==="textarea"){
 
@@ -1626,79 +1936,51 @@ function renderSetup(){
 
     }).join("");
 
-  const examples =
-    document.getElementById("setupExamples");
+  const examples=
+    document.getElementById(
+      "setupExamples"
+    );
 
-  if(step.examples){
-
-    examples.classList.remove("hidden");
-
-    examples.textContent =
-      "💡 " + step.examples;
-
-  }else{
-
-    examples.classList.add("hidden");
-
-  }
+  examples.classList.remove("hidden");
+  examples.textContent=
+    "💡 "+step.examples;
 
   document.getElementById(
     "progressBar"
-  ).style.width =
+  ).style.width=
     ((setupStep+1)/setupSteps.length*100)+"%";
 
   document.getElementById(
     "backSetup"
-  ).style.visibility =
-    setupStep===0 ? "hidden" : "visible";
+  ).style.visibility=
+    setupStep===0?"hidden":"visible";
 
   document.getElementById(
     "nextSetup"
-  ).textContent =
+  ).textContent=
     setupStep===setupSteps.length-1
-      ? "Finish"
-      : "Continue";
-
-  const assistant =
-    profile.assistantName || "LifePilot";
-
-  /*
-    Once the page is already unlocked by the first tap,
-    speaking each question is allowed much more reliably.
-  */
-
-  setTimeout(()=>{
-
-    speak(
-      step.question
-        .replace("LifePilot",assistant)
-    );
-
-  },200);
+      ?"Finish"
+      :"Continue";
 
 }
 
 
 function collectSetupFields(){
 
-  const step =
-    setupSteps[setupStep];
+  setupSteps[setupStep]
+    .fields
+    .forEach(field=>{
 
-  step.fields.forEach(field=>{
+      const el=
+        document.getElementById(
+          "setup_"+field.id
+        );
 
-    const element =
-      document.getElementById(
-        "setup_"+field.id
-      );
+      if(el)
+        profile[field.id]=
+          el.value.trim();
 
-    if(element){
-
-      profile[field.id] =
-        element.value.trim();
-
-    }
-
-  });
+    });
 
   saveProfile();
 
@@ -1709,11 +1991,9 @@ function nextSetup(){
 
   collectSetupFields();
 
-  if(setupStep <
-     setupSteps.length-1){
+  if(setupStep<setupSteps.length-1){
 
     setupStep++;
-
     renderSetup();
 
   }else{
@@ -1732,7 +2012,6 @@ function previousSetup(){
   if(setupStep>0){
 
     setupStep--;
-
     renderSetup();
 
   }
@@ -1744,48 +2023,36 @@ function finishSetup(){
 
   collectSetupFields();
 
-  if(!profile.assistantName){
+  profile.assistantName=
+    profile.assistantName||
+    "LifePilot";
 
-    profile.assistantName =
-      "LifePilot";
-
-  }
-
-  if(!profile.userName){
-
-    profile.userName =
-      "there";
-
-  }
+  profile.userName=
+    profile.userName||
+    "there";
 
   saveProfile();
 
-  /*
-    Convert goals written during onboarding
-    into actual goal records.
-  */
-
   if(
     profile.goalsText &&
-    data.goals.length===0
+    !data.goals.length
   ){
 
-    const goals =
-      profile.goalsText
-        .split(/\n|,|;/)
-        .map(x=>x.trim())
-        .filter(Boolean);
+    profile.goalsText
+      .split(/\n|,|;/)
+      .map(x=>x.trim())
+      .filter(Boolean)
+      .slice(0,8)
+      .forEach(title=>{
 
-    goals.slice(0,8).forEach(goal=>{
+        data.goals.push({
+          id:uid(),
+          title,
+          progress:0,
+          created:today()
+        });
 
-      data.goals.push({
-        id:uid(),
-        title:goal,
-        progress:0,
-        created:today()
       });
-
-    });
 
   }
 
@@ -1805,16 +2072,10 @@ function finishSetup(){
   );
 
   saveData();
-
   showApp();
 
-  const name =
-    profile.userName==="there"
-      ? ""
-      : `, ${profile.userName}`;
-
   speak(
-    `Nice to meet you${name}. I'm ${profile.assistantName}. From now on, you can just tell me what's going on and I'll help you figure out what comes next.`
+    `Nice to meet you, ${profile.userName}. From now on, you can just tell me what's going on and I'll help you figure out what comes next.`
   );
 
 }
@@ -1824,9 +2085,13 @@ function finishSetup(){
    TASKS
    ============================================================ */
 
-function addTask(title,meta="Added to LifePilot.",priority=2){
+function addTask(
+  title,
+  meta="Added to LifePilot.",
+  priority=2
+){
 
-  if(!title) return;
+  if(!title)return;
 
   data.tasks.push({
     id:uid(),
@@ -1851,17 +2116,16 @@ function addTask(title,meta="Added to LifePilot.",priority=2){
 
 function toggleTask(id){
 
-  const task =
+  const task=
     data.tasks.find(x=>x.id===id);
 
-  if(!task) return;
+  if(!task)return;
 
-  task.done =
-    !task.done;
+  task.done=!task.done;
 
   if(task.done){
 
-    task.completed =
+    task.completed=
       new Date().toISOString();
 
     logActivity(
@@ -1886,18 +2150,10 @@ function toggleTask(id){
 
 function deleteTask(id){
 
-  const task =
-    data.tasks.find(x=>x.id===id);
-
-  if(!task) return;
-
-  data.tasks =
-    data.tasks.filter(x=>x.id!==id);
-
-  logActivity(
-    "task_deleted",
-    task.title
-  );
+  data.tasks=
+    data.tasks.filter(
+      x=>x.id!==id
+    );
 
   saveData();
 
@@ -1906,36 +2162,34 @@ function deleteTask(id){
 
 function renderTasks(){
 
-  const list =
-    document.getElementById("taskList");
+  const list=
+    document.getElementById(
+      "taskList"
+    );
 
   if(!data.tasks.length){
 
-    list.innerHTML =
+    list.innerHTML=
       `<div class="empty">
-        Nothing on your list yet. Tell LifePilot what you've got going on.
+        Nothing on your list yet. Tell LifePilot what's going on.
       </div>`;
 
     return;
 
   }
 
-  const sorted =
-    [...data.tasks]
-      .sort((a,b)=>{
+  const sorted=
+    [...data.tasks].sort((a,b)=>{
 
-        if(a.done!==b.done){
+      if(a.done!==b.done)
+        return a.done?1:-1;
 
-          return a.done ? 1 : -1;
+      return (b.priority||1)-
+             (a.priority||1);
 
-        }
+    });
 
-        return (b.priority||1) -
-               (a.priority||1);
-
-      });
-
-  list.innerHTML =
+  list.innerHTML=
     sorted.map(task=>`
 
       <div class="item">
@@ -1943,7 +2197,9 @@ function renderTasks(){
         <button
           class="check ${task.done?"done":""}"
           onclick="toggleTask(${task.id})">
+
           ${task.done?"✓":""}
+
         </button>
 
         <div class="item-main">
@@ -1977,14 +2233,16 @@ function renderTasks(){
 
 function addGoal(title,progress=0){
 
-  if(!title) return;
+  if(!title)return;
 
   data.goals.push({
     id:uid(),
     title,
     progress:Math.max(
       0,
-      Math.min(100,Number(progress)||0)
+      Math.min(100,
+        Number(progress)||0
+      )
     ),
     created:today()
   });
@@ -2001,21 +2259,23 @@ function addGoal(title,progress=0){
 
 function renderGoals(){
 
-  const box =
-    document.getElementById("goalList");
+  const box=
+    document.getElementById(
+      "goalList"
+    );
 
   if(!data.goals.length){
 
-    box.innerHTML =
+    box.innerHTML=
       `<div class="empty">
-        No goals yet. That's okay. You can tell me one whenever you're ready.
+        No goals yet.
       </div>`;
 
     return;
 
   }
 
-  box.innerHTML =
+  box.innerHTML=
     data.goals.map(goal=>`
 
       <div class="goal">
@@ -2045,75 +2305,56 @@ function renderGoals(){
 
 
 /* ============================================================
-   MISSION
+   EVENTS / HABITS
    ============================================================ */
 
-function createMission(){
+function addEvent(title,date="",time=""){
 
-  const open =
-    data.tasks.filter(x=>!x.done);
-
-  let mission = null;
-
-  if(open.length){
-
-    mission =
-      [...open]
-        .sort((a,b)=>
-          (b.priority||1) -
-          (a.priority||1)
-        )[0];
-
-  }
-
-  if(!mission){
-
-    mission = {
-      title:
-        "Take 15 minutes to improve one part of your environment.",
-      description:
-        "Choose one small area — your workspace, vehicle, home, files, or anything around you."
-    };
-
-  }
-
-  const record = {
+  data.events.push({
     id:uid(),
-    title:mission.title,
-    description:
-      mission.description ||
-      mission.meta ||
-      "One meaningful thing within the next 18 hours.",
-    created:new Date().toISOString(),
-    completed:false
-  };
+    title,
+    date,
+    time,
+    created:today()
+  });
 
-  data.missions.push(record);
-
-  if(data.missions.length>30){
-
-    data.missions =
-      data.missions.slice(-30);
-
-  }
+  logActivity(
+    "event_created",
+    title
+  );
 
   saveData();
 
 }
 
 
-function currentMission(){
+function addHabit(title,frequency="Daily"){
 
-  return data.missions
-    .filter(x=>!x.completed)
-    .slice(-1)[0] || null;
+  data.habits.push({
+    id:uid(),
+    title,
+    frequency,
+    created:today(),
+    completedDates:[]
+  });
+
+  logActivity(
+    "habit_created",
+    title
+  );
+
+  saveData();
 
 }
 
 
-function newMission(){
+/* ============================================================
+   MISSION
+   ============================================================ */
 
-  const open =
+function createMission(){
+
+  const open=
     data.tasks.filter(x=>!x.done);
 
   let title;
@@ -2121,62 +2362,25 @@ function newMission(){
 
   if(open.length){
 
-    const candidates =
+    const task=
       [...open].sort(
         (a,b)=>
-          (b.priority||1) -
+          (b.priority||1)-
           (a.priority||1)
-      );
+      )[0];
 
-    const task =
-      candidates[0];
+    title=task.title;
 
-    title =
-      task.title;
-
-    description =
-      "Give this one focused block of attention. The goal is progress, not perfection.";
+    description=
+      "Give this one focused block of attention. Progress, not perfection.";
 
   }else{
 
-    const options=[
+    title=
+      "Do one thing that makes tomorrow easier.";
 
-      [
-        "Clear one small area for 15 minutes.",
-        "Pick a physical space that would make tomorrow easier."
-      ],
-
-      [
-        "Take a 20-minute walk.",
-        "Give yourself a simple reset and get some movement."
-      ],
-
-      [
-        "Finish one thing you've been putting off.",
-        "Choose something small enough that you can actually finish it."
-      ],
-
-      [
-        "Spend 20 minutes moving a personal project forward.",
-        "Do the next concrete step instead of trying to finish everything."
-      ],
-
-      [
-        "Do one thing that makes tomorrow easier.",
-        "Prepare, organize, clean, schedule, or decide something."
-      ]
-
-    ];
-
-    const pick =
-      options[
-        Math.floor(
-          Math.random()*options.length
-        )
-      ];
-
-    title=pick[0];
-    description=pick[1];
+    description=
+      "Prepare, organize, clean, schedule, or decide something.";
 
   }
 
@@ -2188,36 +2392,65 @@ function newMission(){
     completed:false
   });
 
-  logActivity(
-    "mission_created",
-    title
-  );
-
   saveData();
 
-  speak(
-    `Your new mission is: ${title}`
-  );
+}
+
+
+function currentMission(){
+
+  return data.missions
+    .filter(x=>!x.completed)
+    .slice(-1)[0]||null;
+
+}
+
+
+function newMission(){
+
+  if(data.tasks.some(x=>!x.done)){
+
+    createMission();
+
+  }else{
+
+    data.missions.push({
+      id:uid(),
+      title:"Take 15 minutes to improve one small part of your environment.",
+      description:"Pick something that will make the next day easier.",
+      created:new Date().toISOString(),
+      completed:false
+    });
+
+    saveData();
+
+  }
+
+  const mission=
+    currentMission();
+
+  if(mission)
+    speak(
+      `Your new mission is: ${mission.title}`
+    );
 
 }
 
 
 function completeMission(){
 
-  const mission =
+  const mission=
     currentMission();
 
   if(!mission){
 
     newMission();
-
     return;
 
   }
 
   mission.completed=true;
-
-  mission.completedAt =
+  mission.completedAt=
     new Date().toISOString();
 
   logActivity(
@@ -2228,33 +2461,32 @@ function completeMission(){
   saveData();
 
   speak(
-    `Mission complete. Nice work.`
+    "Mission complete. Nice work."
   );
 
-  setTimeout(()=>{
-
-    newMission();
-
-  },600);
+  setTimeout(
+    newMission,
+    500
+  );
 
 }
 
 
 function renderMission(){
 
-  const mission =
+  const mission=
     currentMission();
 
   if(!mission){
 
     document.getElementById(
       "missionTitle"
-    ).textContent =
+    ).textContent=
       "You're caught up.";
 
     document.getElementById(
       "missionDescription"
-    ).textContent =
+    ).textContent=
       "Create a new mission whenever you're ready.";
 
     return;
@@ -2263,12 +2495,12 @@ function renderMission(){
 
   document.getElementById(
     "missionTitle"
-  ).textContent =
+  ).textContent=
     mission.title;
 
   document.getElementById(
     "missionDescription"
-  ).textContent =
+  ).textContent=
     mission.description;
 
 }
@@ -2276,7 +2508,7 @@ function renderMission(){
 
 function speakCurrentMission(){
 
-  const mission =
+  const mission=
     currentMission();
 
   if(!mission){
@@ -2290,185 +2522,452 @@ function speakCurrentMission(){
   }
 
   speak(
-    `Your eighteen hour mission is: ${mission.title}. ${mission.description}`
+    `Your mission is: ${mission.title}. ${mission.description}`
   );
 
 }
 
 
 /* ============================================================
-   PATTERN ENGINE
+   AI ASSISTANT
    ============================================================ */
 
-function generatePatterns(){
+async function askAI(message){
 
-  const insights=[];
+  if(!message)return;
 
-  const tasks =
-    data.tasks;
+  document.getElementById(
+    "assistantTranscript"
+  ).textContent=
+    `“${message}”`;
 
-  /*
-    Pattern 1:
-    Repeated postponement.
-  */
+  document.getElementById(
+    "assistantStatus"
+  ).textContent=
+    "Thinking…";
 
-  tasks.forEach(task=>{
+  logActivity(
+    "user_message",
+    message
+  );
 
-    if(
-      task.postpones>=3 &&
-      !task.done
-    ){
+  const context={
+    profile:{
+      userName:profile.userName,
+      assistantName:profile.assistantName,
+      schedule:profile.schedule,
+      vision:profile.vision,
+      remember:profile.remember,
+      usefulness:profile.usefulness
+    },
 
-      insights.push({
-        type:"REPEATED PATTERN",
-        title:`You've kept returning to "${task.title}".`,
-        text:
-          "This may be becoming a recurring avoidance or scheduling pattern.",
-        evidence:
-          `This task has been postponed ${task.postpones} times without being completed.`
-      });
+    tasks:data.tasks.slice(-50),
+
+    goals:data.goals.slice(-30),
+
+    events:data.events.slice(-30),
+
+    habits:data.habits.slice(-30),
+
+    missions:data.missions.slice(-20),
+
+    memories:data.memories.slice(-20),
+
+    recentActivity:
+      data.activity.slice(-50)
+  };
+
+  try{
+
+    const response=
+      await fetch(
+        "/api/assistant",
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:JSON.stringify({
+            message,
+            context
+          })
+        }
+      );
+
+    const result=
+      await response.json();
+
+    if(!response.ok){
+
+      throw new Error(
+        result.error||
+        "Assistant failed"
+      );
+
+    }
+
+    const reply=
+      result.reply||
+      "I'm here. Tell me what's going on.";
+
+    lastAIResponse=reply;
+
+    document.getElementById(
+      "assistantStatus"
+    ).textContent=
+      reply;
+
+    document.getElementById(
+      "assistantTranscript"
+    ).innerHTML=
+      `<div>${esc(reply)}</div>`;
+
+    /*
+      Apply actions suggested by AI.
+    */
+
+    if(Array.isArray(result.actions)){
+
+      applyAIActions(
+        result.actions
+      );
 
     }
 
-  });
+    saveData();
 
+    await speak(reply);
 
-  /*
-    Pattern 2:
-    Many tasks but few completions.
-  */
+  }catch(error){
 
-  const recent =
-    tasks.filter(task=>{
+    console.error(error);
 
-      if(!task.created) return false;
+    const fallback=
+      "I couldn't reach my AI assistant right now. Check that your OpenAI API key is configured in Vercel.";
 
-      const age =
-        (Date.now() -
-          new Date(task.created).getTime())
-        /86400000;
+    document.getElementById(
+      "assistantStatus"
+    ).textContent=
+      fallback;
 
-      return age<=14;
+    lastAIResponse=fallback;
 
-    });
-
-  if(
-    recent.length>=5
-  ){
-
-    const completed =
-      recent.filter(x=>x.done).length;
-
-    const completionRate =
-      completed/recent.length;
-
-    if(completionRate<.35){
-
-      insights.push({
-
-        type:"POSSIBLE PATTERN",
-
-        title:
-          "Your recent list may be getting larger faster than you're clearing it.",
-
-        text:
-          "That can sometimes mean the system needs fewer active priorities rather than more tasks.",
-
-        evidence:
-          `${recent.length} tasks were created in the last 14 days and ${completed} were completed.`
-
-      });
-
-    }
+    speak(fallback);
 
   }
 
+}
 
-  /*
-    Pattern 3:
-    Repeated mentions of similar subjects.
-  */
 
-  const activity =
-    data.activity || [];
+function applyAIActions(actions){
 
-  const words={};
+  actions.forEach(action=>{
 
-  activity.forEach(item=>{
+    if(!action || !action.type)
+      return;
 
-    const wordsFound =
-      String(item.text||"")
-        .toLowerCase()
-        .replace(/[^a-z0-9\s]/g," ")
-        .split(/\s+/)
-        .filter(word=>
-          word.length>=5 &&
-          ![
-            "there",
-            "about",
-            "something",
-            "thing",
-            "today",
-            "tomorrow",
-            "really",
-            "would",
-            "should",
-            "could"
-          ].includes(word)
-        );
+    switch(action.type){
 
-    wordsFound.forEach(word=>{
+      case "add_task":
 
-      words[word] =
-        (words[word]||0)+1;
+        if(action.title){
 
-    });
+          addTask(
+            action.title,
+            action.meta||
+              "Added by LifePilot AI",
+            Number(action.priority)||2
+          );
+
+        }
+
+        break;
+
+
+      case "add_goal":
+
+        if(action.title){
+
+          addGoal(
+            action.title,
+            Number(action.progress)||0
+          );
+
+        }
+
+        break;
+
+
+      case "add_event":
+
+        if(action.title){
+
+          addEvent(
+            action.title,
+            action.date||"",
+            action.time||""
+          );
+
+        }
+
+        break;
+
+
+      case "add_habit":
+
+        if(action.title){
+
+          addHabit(
+            action.title,
+            action.frequency||"Daily"
+          );
+
+        }
+
+        break;
+
+
+      case "complete_task":
+
+        if(action.title){
+
+          const task=
+            data.tasks.find(
+              t =>
+                !t.done &&
+                t.title
+                  .toLowerCase()
+                  .includes(
+                    action.title.toLowerCase()
+                  )
+            );
+
+          if(task){
+
+            task.done=true;
+            task.completed=
+              new Date().toISOString();
+
+          }
+
+        }
+
+        break;
+
+
+      case "create_mission":
+
+        if(action.title){
+
+          data.missions.push({
+            id:uid(),
+            title:action.title,
+            description:
+              action.description||
+              "One useful next step.",
+            created:
+              new Date().toISOString(),
+            completed:false
+          });
+
+        }
+
+        break;
+
+    }
 
   });
 
-  const repeated =
-    Object.entries(words)
-      .filter(([word,count])=>count>=4)
-      .sort((a,b)=>b[1]-a[1])
-      .slice(0,3);
+}
 
-  repeated.forEach(([word,count])=>{
 
-    insights.push({
+/* ============================================================
+   NATURAL INPUT
+   ============================================================ */
 
-      type:"REPEATED THEME",
+function processNaturalInput(){
+
+  const input=
+    document.getElementById(
+      "naturalInput"
+    );
+
+  const text=
+    input.value.trim();
+
+  if(!text)return;
+
+  input.value="";
+
+  askAI(text);
+
+}
+
+
+/* ============================================================
+   VOICE INPUT
+   ============================================================ */
+
+function toggleVoice(){
+
+  const SpeechRecognition=
+    window.SpeechRecognition||
+    window.webkitSpeechRecognition;
+
+  if(!SpeechRecognition){
+
+    const message=
+      "Voice input isn't supported by this browser. You can still type to me.";
+
+    document.getElementById(
+      "assistantStatus"
+    ).textContent=message;
+
+    speak(message);
+
+    return;
+
+  }
+
+  if(voiceListening){
+
+    voiceRecognition.stop();
+    return;
+
+  }
+
+  voiceRecognition=
+    new SpeechRecognition();
+
+  voiceRecognition.lang="en-CA";
+  voiceRecognition.interimResults=false;
+  voiceRecognition.continuous=false;
+
+  voiceRecognition.onstart=()=>{
+
+    voiceListening=true;
+
+    const button=
+      document.getElementById(
+        "voiceButton"
+      );
+
+    button.textContent=
+      "⏹ Stop listening";
+
+    button.classList.add(
+      "listening"
+    );
+
+    document.getElementById(
+      "assistantStatus"
+    ).textContent=
+      "I'm listening…";
+
+  };
+
+
+  voiceRecognition.onresult=
+    event=>{
+
+      const text=
+        event.results[0][0]
+          .transcript;
+
+      askAI(text);
+
+    };
+
+
+  voiceRecognition.onerror=
+    event=>{
+
+      console.warn(event);
+
+      document.getElementById(
+        "assistantStatus"
+      ).textContent=
+        "I couldn't hear that. Try again.";
+
+    };
+
+
+  voiceRecognition.onend=()=>{
+
+    voiceListening=false;
+
+    const button=
+      document.getElementById(
+        "voiceButton"
+      );
+
+    button.textContent=
+      "🎙️ Talk to me";
+
+    button.classList.remove(
+      "listening"
+    );
+
+  };
+
+
+  try{
+
+    voiceRecognition.start();
+
+  }catch(error){
+
+    console.warn(error);
+
+  }
+
+}
+
+
+/* ============================================================
+   PATTERNS
+   ============================================================ */
+
+function renderPatterns(){
+
+  const box=
+    document.getElementById(
+      "patternList"
+    );
+
+  const completed=
+    data.tasks.filter(x=>x.done);
+
+  const open=
+    data.tasks.filter(x=>!x.done);
+
+  const patterns=[];
+
+  if(open.length>=5){
+
+    patterns.push({
+
+      type:"POSSIBLE PATTERN",
 
       title:
-        `"${word}" keeps coming up.`,
+        "You've got a lot competing for attention.",
 
       text:
-        "That doesn't necessarily mean anything is wrong. It may simply be something that matters to you or something that hasn't been resolved.",
+        "LifePilot thinks reducing active priorities may help more than adding more tasks.",
 
       evidence:
-        `The word appeared repeatedly in your recent LifePilot activity (${count} recorded mentions).`
+        `${open.length} open tasks are currently recorded.`
 
     });
 
-  });
-
-
-  /*
-    Positive pattern:
-    completed tasks.
-  */
-
-  const completed =
-    tasks.filter(x=>x.done);
+  }
 
   if(completed.length>=3){
 
-    const positive =
-      completed
-        .slice(-3)
-        .map(x=>x.title)
-        .join(" • ");
-
-    insights.push({
+    patterns.push({
 
       type:"POSITIVE PATTERN",
 
@@ -2476,63 +2975,45 @@ function generatePatterns(){
         "You've been finishing things.",
 
       text:
-        "LifePilot has noticed several completed actions. Those small wins are useful evidence about what works for you.",
+        "Several completed actions are evidence of progress.",
 
       evidence:
-        positive
+        completed
+          .slice(-3)
+          .map(x=>x.title)
+          .join(" • ")
 
     });
 
   }
 
-
-  return insights.slice(0,6);
-
-}
-
-
-function renderPatterns(){
-
-  const box =
-    document.getElementById(
-      "patternList"
-    );
-
-  const patterns =
-    generatePatterns();
-
   if(!patterns.length){
 
-    box.innerHTML =
+    box.innerHTML=
       `<div class="empty">
-        I don't have enough evidence yet to identify a meaningful personal pattern.
-        Keep using LifePilot naturally. I'll look for patterns without pretending I know something I don't.
+        I need a little more history before I can identify a useful pattern.
       </div>`;
 
     return;
 
   }
 
-  box.innerHTML =
-    patterns.map(pattern=>`
+  box.innerHTML=
+    patterns.map(p=>`
 
       <div class="insight">
 
         <div class="insight-tag">
-          ${esc(pattern.type)}
+          ${esc(p.type)}
         </div>
 
-        <h4>
-          ${esc(pattern.title)}
-        </h4>
+        <h4>${esc(p.title)}</h4>
 
-        <p>
-          ${esc(pattern.text)}
-        </p>
+        <p>${esc(p.text)}</p>
 
         <div class="evidence">
           <b>Why I noticed:</b><br>
-          ${esc(pattern.evidence)}
+          ${esc(p.evidence)}
         </div>
 
       </div>
@@ -2548,7 +3029,7 @@ function renderPatterns(){
 
 function renderMemory(){
 
-  const box =
+  const box=
     document.getElementById(
       "memoryList"
     );
@@ -2578,17 +3059,19 @@ function renderMemory(){
 
   if(!memories.length){
 
-    box.innerHTML =
-      `<span class="memory-chip">Nothing stored yet</span>`;
+    box.innerHTML=
+      `<span class="memory-chip">
+        Nothing stored yet
+      </span>`;
 
     return;
 
   }
 
-  box.innerHTML =
-    memories.map(memory=>
+  box.innerHTML=
+    memories.map(m=>
       `<span class="memory-chip">
-        ${esc(memory)}
+        ${esc(m)}
       </span>`
     ).join("");
 
@@ -2600,9 +3083,9 @@ function openMemory(){
   openModal(
     "What I remember",
     `
+
       <p class="sub">
         These are the details currently stored in this browser.
-        You can edit your profile from Settings.
       </p>
 
       <div style="margin-top:12px">
@@ -2621,431 +3104,19 @@ function openMemory(){
       </div>
 
       <div class="modal-actions">
-        <button class="btn primary" onclick="closeModal();openSettings()">
+
+        <button
+          class="btn primary"
+          onclick="closeModal();openSettings()">
+
           Edit profile
+
         </button>
+
       </div>
+
     `
   );
-
-}
-
-
-/* ============================================================
-   NATURAL LANGUAGE
-   ============================================================ */
-
-function processNaturalInput(){
-
-  const input =
-    document.getElementById(
-      "naturalInput"
-    );
-
-  const text =
-    input.value.trim();
-
-  if(!text) return;
-
-  document.getElementById(
-    "assistantTranscript"
-  ).textContent =
-    `“${text}”`;
-
-  logActivity(
-    "user_message",
-    text
-  );
-
-  /*
-    Simple prototype understanding.
-    The real AI layer comes later.
-  */
-
-  const lower =
-    text.toLowerCase();
-
-  if(
-    lower.includes("what should") ||
-    lower.includes("what do i") ||
-    lower.includes("what am i forgetting")
-  ){
-
-    const suggestion =
-      getNextSuggestion();
-
-    document.getElementById(
-      "assistantStatus"
-    ).textContent =
-      "I looked at what you've got going on.";
-
-    speak(suggestion);
-
-    input.value="";
-
-    saveData();
-
-    return;
-
-  }
-
-
-  /*
-    Goal detection.
-  */
-
-  if(
-    lower.includes("my goal is") ||
-    lower.includes("i want to")
-  ){
-
-    const title =
-      text
-        .replace(
-          /^(.*?)(my goal is|i want to)\s+/i,
-          ""
-        )
-        .trim();
-
-    if(title){
-
-      addGoal(title,0);
-
-      speak(
-        `I've added that as a goal: ${title}`
-      );
-
-      input.value="";
-
-      return;
-
-    }
-
-  }
-
-
-  /*
-    Otherwise treat it as a meaningful action/note.
-  */
-
-  const cleaned =
-    text
-      .replace(
-        /^(i need to|i have to|i want to|remind me to|please)\s+/i,
-        ""
-      )
-      .trim();
-
-  addTask(
-    cleaned.charAt(0).toUpperCase()+
-    cleaned.slice(1),
-    "Added from your conversation",
-    2
-  );
-
-  document.getElementById(
-    "assistantStatus"
-  ).textContent =
-    "Got it. I've added that to your life.";
-
-  speak(
-    `Got it. I've added that to your list.`
-  );
-
-  input.value="";
-
-}
-
-
-function getNextSuggestion(){
-
-  const open =
-    data.tasks
-      .filter(x=>!x.done)
-      .sort(
-        (a,b)=>
-          (b.priority||1)-
-          (a.priority||1)
-      );
-
-  if(open.length){
-
-    return `Based on what you've told me, I'd start with ${open[0].title}.`;
-
-  }
-
-  if(data.goals.length){
-
-    return `You don't have an urgent task showing. A useful next step could be making progress toward ${data.goals[0].title}.`;
-
-  }
-
-  return "You don't have much recorded yet. Tell me what is on your mind and I'll help turn it into a next step.";
-
-}
-
-
-/* ============================================================
-   VOICE INPUT
-   ============================================================ */
-
-function toggleVoice(){
-
-  const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
-
-  if(!SpeechRecognition){
-
-    document.getElementById(
-      "assistantStatus"
-    ).textContent =
-      "Voice input isn't supported here. You can still type to me below.";
-
-    speak(
-      "Voice input isn't supported by this browser. You can still type to me."
-    );
-
-    return;
-
-  }
-
-  if(voiceListening){
-
-    voiceRecognition.stop();
-
-    return;
-
-  }
-
-  voiceRecognition =
-    new SpeechRecognition();
-
-  voiceRecognition.lang =
-    "en-CA";
-
-  voiceRecognition.interimResults=false;
-
-  voiceRecognition.continuous=false;
-
-  voiceRecognition.onstart=()=>{
-
-    voiceListening=true;
-
-    document.getElementById(
-      "voiceButton"
-    ).textContent =
-      "⏹ Stop listening";
-
-    document.getElementById(
-      "voiceButton"
-    ).classList.add(
-      "listening"
-    );
-
-    document.getElementById(
-      "assistantStatus"
-    ).textContent =
-      "I'm listening…";
-
-  };
-
-
-  voiceRecognition.onresult=(event)=>{
-
-    const text =
-      event.results[0][0].transcript;
-
-    document.getElementById(
-      "assistantTranscript"
-    ).textContent =
-      `“${text}”`;
-
-    processNaturalInputText(text);
-
-  };
-
-
-  voiceRecognition.onerror=()=>{
-
-    document.getElementById(
-      "assistantStatus"
-    ).textContent =
-      "I couldn't hear that. Try again.";
-
-  };
-
-
-  voiceRecognition.onend=()=>{
-
-    voiceListening=false;
-
-    document.getElementById(
-      "voiceButton"
-    ).textContent =
-      "🎙️ Talk to me";
-
-    document.getElementById(
-      "voiceButton"
-    ).classList.remove(
-      "listening"
-    );
-
-  };
-
-
-  try{
-
-    voiceRecognition.start();
-
-  }catch(e){
-
-    document.getElementById(
-      "assistantStatus"
-    ).textContent =
-      "Voice couldn't start. Try tapping the button again.";
-
-  }
-
-}
-
-
-function processNaturalInputText(text){
-
-  const lower =
-    text.toLowerCase();
-
-  logActivity(
-    "voice_message",
-    text
-  );
-
-  if(
-    lower.includes("what should") ||
-    lower.includes("what can i work") ||
-    lower.includes("what am i forgetting")
-  ){
-
-    const answer =
-      getNextSuggestion();
-
-    document.getElementById(
-      "assistantStatus"
-    ).textContent =
-      answer;
-
-    speak(answer);
-
-    saveData();
-
-    return;
-
-  }
-
-  if(
-    lower.includes("my goal is") ||
-    lower.includes("i want to")
-  ){
-
-    const title =
-      text
-        .replace(
-          /^(.*?)(my goal is|i want to)\s+/i,
-          ""
-        )
-        .trim();
-
-    if(title){
-
-      addGoal(title,0);
-
-      speak(
-        `I've added ${title} as a goal.`
-      );
-
-      return;
-
-    }
-
-  }
-
-  const cleaned =
-    text
-      .replace(
-        /^(i need to|i have to|remind me to|please)\s+/i,
-        ""
-      )
-      .trim();
-
-  addTask(
-    cleaned.charAt(0).toUpperCase()+
-    cleaned.slice(1),
-    "Added by voice",
-    2
-  );
-
-  document.getElementById(
-    "assistantStatus"
-  ).textContent =
-    "Got it. I've added that.";
-
-  speak(
-    `Got it. I've added that to your list.`
-  );
-
-}
-
-
-/* ============================================================
-   PLAN MY DAY
-   ============================================================ */
-
-function planDay(){
-
-  const open =
-    data.tasks.filter(x=>!x.done);
-
-  if(!open.length){
-
-    speak(
-      "You don't have any open tasks. That's a good place to be."
-    );
-
-    alert(
-      "You don't have any open tasks. Tell LifePilot what you'd like to accomplish."
-    );
-
-    return;
-
-  }
-
-  open
-    .sort(
-      (a,b)=>
-        (b.priority||1)-
-        (a.priority||1)
-    )
-    .slice(0,3)
-    .forEach((task,index)=>{
-
-      task.priority =
-        3-index;
-
-    });
-
-  saveData();
-
-  const first =
-    open[0];
-
-  speak(
-    `Let's keep today simple. Start with ${first.title}.`
-  );
-
-  document.getElementById(
-    "assistantStatus"
-  ).textContent =
-    `Start with: ${first.title}`;
 
 }
 
@@ -3058,13 +3129,11 @@ function openModal(title,body){
 
   document.getElementById(
     "modalTitle"
-  ).textContent =
-    title;
+  ).textContent=title;
 
   document.getElementById(
     "modalBody"
-  ).innerHTML =
-    body;
+  ).innerHTML=body;
 
   document.getElementById(
     "modal"
@@ -3084,39 +3153,59 @@ function closeModal(){
 
 function closeModalOutside(event){
 
-  if(event.target.id==="modal"){
-
+  if(event.target.id==="modal")
     closeModal();
-
-  }
 
 }
 
+
+/* ============================================================
+   ADD TASK
+   ============================================================ */
 
 function openAddTask(){
 
   openModal(
     "Add a task",
     `
+
       <div class="field">
         <label>What needs to be done?</label>
-        <input id="modalTaskTitle"
+
+        <input
+          id="modalTaskTitle"
           placeholder="Example: Call the insurance company">
+
       </div>
 
       <div class="field">
+
         <label>How important?</label>
+
         <select id="modalTaskPriority">
+
           <option value="1">Normal</option>
           <option value="2" selected>Important</option>
           <option value="3">Very important</option>
+
         </select>
+
       </div>
 
       <div class="modal-actions">
-        <button class="btn" onclick="closeModal()">Cancel</button>
-        <button class="btn primary" onclick="saveTaskModal()">Add task</button>
+
+        <button class="btn"
+                onclick="closeModal()">
+          Cancel
+        </button>
+
+        <button class="btn primary"
+                onclick="saveTaskModal()">
+          Add task
+        </button>
+
       </div>
+
     `
   );
 
@@ -3125,12 +3214,12 @@ function openAddTask(){
 
 function saveTaskModal(){
 
-  const title =
+  const title=
     document.getElementById(
       "modalTaskTitle"
     ).value.trim();
 
-  const priority =
+  const priority=
     Number(
       document.getElementById(
         "modalTaskPriority"
@@ -3140,7 +3229,6 @@ function saveTaskModal(){
   if(!title){
 
     alert("Tell me what needs to be done.");
-
     return;
 
   }
@@ -3156,15 +3244,23 @@ function saveTaskModal(){
 }
 
 
+/* ============================================================
+   ADD EVENT
+   ============================================================ */
+
 function openAddEvent(){
 
   openModal(
     "Add an event",
     `
+
       <div class="field">
         <label>What is happening?</label>
-        <input id="eventTitle"
+
+        <input
+          id="eventTitle"
           placeholder="Example: Dentist appointment">
+
       </div>
 
       <div class="field">
@@ -3178,207 +3274,216 @@ function openAddEvent(){
       </div>
 
       <div class="modal-actions">
-        <button class="btn" onclick="closeModal()">Cancel</button>
-        <button class="btn primary" onclick="saveEvent()">Save event</button>
+
+        <button class="btn"
+                onclick="closeModal()">
+          Cancel
+        </button>
+
+        <button class="btn primary"
+                onclick="saveEventModal()">
+          Save event
+        </button>
+
       </div>
+
     `
   );
 
 }
 
 
-function saveEvent(){
+function saveEventModal(){
 
-  const title =
+  const title=
     document.getElementById(
       "eventTitle"
     ).value.trim();
 
+  const date=
+    document.getElementById(
+      "eventDate"
+    ).value;
+
+  const time=
+    document.getElementById(
+      "eventTime"
+    ).value;
+
   if(!title){
 
     alert("Tell me what the event is.");
-
     return;
 
   }
 
-  data.events.push({
-
-    id:uid(),
-
-    title,
-
-    date:
-      document.getElementById(
-        "eventDate"
-      ).value,
-
-    time:
-      document.getElementById(
-        "eventTime"
-      ).value,
-
-    created:today()
-
-  });
-
-  logActivity(
-    "event_created",
-    title
-  );
-
-  saveData();
-
+  addEvent(title,date,time);
   closeModal();
 
   speak(
-    `I've saved ${title} to your LifePilot events.`
+    `I've saved ${title}.`
   );
 
 }
 
+
+/* ============================================================
+   ADD HABIT
+   ============================================================ */
 
 function openAddHabit(){
 
   openModal(
     "Add a habit",
     `
+
       <div class="field">
+
         <label>What do you want to repeat?</label>
-        <input id="habitTitle"
+
+        <input
+          id="habitTitle"
           placeholder="Example: Walk for 20 minutes">
+
       </div>
 
       <div class="field">
+
         <label>How often?</label>
+
         <select id="habitFrequency">
+
           <option>Daily</option>
           <option>Weekdays</option>
           <option>Weekly</option>
           <option>Custom</option>
+
         </select>
+
       </div>
 
       <div class="modal-actions">
-        <button class="btn" onclick="closeModal()">Cancel</button>
-        <button class="btn primary" onclick="saveHabit()">Save habit</button>
+
+        <button class="btn"
+                onclick="closeModal()">
+          Cancel
+        </button>
+
+        <button class="btn primary"
+                onclick="saveHabitModal()">
+          Save habit
+        </button>
+
       </div>
+
     `
   );
 
 }
 
 
-function saveHabit(){
+function saveHabitModal(){
 
-  const title =
+  const title=
     document.getElementById(
       "habitTitle"
     ).value.trim();
 
+  const frequency=
+    document.getElementById(
+      "habitFrequency"
+    ).value;
+
   if(!title){
 
     alert("Tell me what habit you want to build.");
-
     return;
 
   }
 
-  data.habits.push({
-
-    id:uid(),
-
-    title,
-
-    frequency:
-      document.getElementById(
-        "habitFrequency"
-      ).value,
-
-    created:today(),
-
-    completedDates:[]
-
-  });
-
-  logActivity(
-    "habit_created",
-    title
-  );
-
-  saveData();
-
+  addHabit(title,frequency);
   closeModal();
-
-  speak(
-    `I've added ${title} as a habit.`
-  );
 
 }
 
+
+/* ============================================================
+   ADD GOAL
+   ============================================================ */
 
 function openAddGoal(){
 
   openModal(
     "Add a goal",
     `
+
       <div class="field">
+
         <label>What are you working toward?</label>
-        <textarea id="goalTitle"
-          placeholder="Example: Build a six-month emergency fund"></textarea>
+
+        <textarea
+          id="goalTitle"
+          placeholder="Example: Build a six-month emergency fund">
+        </textarea>
+
       </div>
 
       <div class="field">
+
         <label>Current progress (%)</label>
-        <input id="goalProgress"
+
+        <input
+          id="goalProgress"
           type="number"
           min="0"
           max="100"
           value="0">
+
       </div>
 
       <div class="modal-actions">
-        <button class="btn" onclick="closeModal()">Cancel</button>
-        <button class="btn primary" onclick="saveGoal()">Save goal</button>
+
+        <button class="btn"
+                onclick="closeModal()">
+          Cancel
+        </button>
+
+        <button class="btn primary"
+                onclick="saveGoalModal()">
+          Save goal
+        </button>
+
       </div>
+
     `
   );
 
 }
 
 
-function saveGoal(){
+function saveGoalModal(){
 
-  const title =
+  const title=
     document.getElementById(
       "goalTitle"
     ).value.trim();
 
-  const progress =
+  const progress=
     Number(
       document.getElementById(
         "goalProgress"
       ).value
-    ) || 0;
+    )||0;
 
   if(!title){
 
     alert("Tell me what you're working toward.");
-
     return;
 
   }
 
-  addGoal(
-    title,
-    progress
-  );
-
+  addGoal(title,progress);
   closeModal();
-
-  speak(
-    `I've added that goal.`
-  );
 
 }
 
@@ -3392,232 +3497,72 @@ function openSettings(){
   openModal(
     "LifePilot settings",
     `
+
       <div class="field">
         <label>Your name</label>
-        <input id="setUserName"
+
+        <input
+          id="setUserName"
           value="${esc(profile.userName||"")}">
+
       </div>
 
       <div class="field">
         <label>What should I call myself?</label>
-        <input id="setAssistantName"
+
+        <input
+          id="setAssistantName"
           value="${esc(profile.assistantName||"LifePilot")}">
+
       </div>
 
       <div class="field">
         <label>Birthday</label>
-        <input id="setBirthday"
+
+        <input
+          id="setBirthday"
           type="date"
           value="${esc(profile.birthday||"")}">
+
       </div>
 
       <div class="field">
         <label>Height</label>
-        <input id="setHeight"
+
+        <input
+          id="setHeight"
           value="${esc(profile.height||"")}">
+
       </div>
 
       <div class="field">
         <label>Weight</label>
-        <input id="setWeight"
+
+        <input
+          id="setWeight"
           value="${esc(profile.weight||"")}">
+
       </div>
 
       <div class="field">
         <label>Clothing / shoe sizes</label>
-        <input id="setClothes"
+
+        <input
+          id="setClothes"
           value="${esc(profile.clothes||"")}">
+
       </div>
 
       <div class="field">
         <label>Normal schedule</label>
-        <textarea id="setSchedule">${esc(profile.schedule||"")}</textarea>
+
+        <textarea
+          id="setSchedule">${esc(profile.schedule||"")}</textarea>
+
       </div>
 
       <div class="field">
         <label>Things to remember</label>
-        <textarea id="setRemember">${esc(profile.remember||"")}</textarea>
-      </div>
 
-      <div class="modal-actions">
-
-        <button
-          class="btn danger"
-          onclick="resetLifePilot()">
-          Reset LifePilot
-        </button>
-
-        <button
-          class="btn primary"
-          onclick="saveSettings()">
-          Save changes
-        </button>
-
-      </div>
-    `
-  );
-
-}
-
-
-function saveSettings(){
-
-  profile.userName =
-    document.getElementById(
-      "setUserName"
-    ).value.trim();
-
-  profile.assistantName =
-    document.getElementById(
-      "setAssistantName"
-    ).value.trim() ||
-    "LifePilot";
-
-  profile.birthday =
-    document.getElementById(
-      "setBirthday"
-    ).value;
-
-  profile.height =
-    document.getElementById(
-      "setHeight"
-    ).value.trim();
-
-  profile.weight =
-    document.getElementById(
-      "setWeight"
-    ).value.trim();
-
-  profile.clothes =
-    document.getElementById(
-      "setClothes"
-    ).value.trim();
-
-  profile.schedule =
-    document.getElementById(
-      "setSchedule"
-    ).value.trim();
-
-  profile.remember =
-    document.getElementById(
-      "setRemember"
-    ).value.trim();
-
-  saveProfile();
-
-  closeModal();
-
-  updateIdentity();
-
-  renderMemory();
-
-  speak(
-    "I've updated your LifePilot profile."
-  );
-
-}
-
-
-function resetLifePilot(){
-
-  const yes =
-    confirm(
-      "This will erase the LifePilot information stored in this browser. Continue?"
-    );
-
-  if(!yes) return;
-
-  localStorage.removeItem(
-    PROFILE_KEY
-  );
-
-  localStorage.removeItem(
-    DATA_KEY
-  );
-
-  location.reload();
-
-}
-
-
-/* ============================================================
-   RENDER
-   ============================================================ */
-
-function renderStats(){
-
-  const open =
-    data.tasks.filter(x=>!x.done).length;
-
-  const done =
-    data.tasks.filter(x=>x.done).length;
-
-  document.getElementById(
-    "openCount"
-  ).textContent=open;
-
-  document.getElementById(
-    "doneCount"
-  ).textContent=done;
-
-  document.getElementById(
-    "goalCount"
-  ).textContent=
-    data.goals.length;
-
-}
-
-
-function renderAll(){
-
-  renderTasks();
-
-  renderGoals();
-
-  renderMemory();
-
-  renderMission();
-
-  renderPatterns();
-
-  renderStats();
-
-}
-
-
-/* ============================================================
-   AUTOMATIC STARTUP
-   ============================================================ */
-
-window.addEventListener(
-  "load",
-  ()=>{
-
-    /*
-      We intentionally do NOT try to force speech here.
-      Android/Chrome can block autoplay.
-
-      Instead, Start LifePilot is the deliberate
-      user gesture that unlocks speech.
-    */
-
-    if(
-      profile.userName &&
-      profile.assistantName
-    ){
-
-      /*
-        Existing user.
-        Show start screen briefly so speech can be
-        intentionally unlocked.
-      */
-
-    }
-
-  }
-);
-
-</script>
-
-</body>
-</html>
+        <textarea
+          id
