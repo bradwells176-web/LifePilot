@@ -1,26 +1,48 @@
+Worked for 10s
+
 Yes. That's how we'll do it from now on: you give me the current file, and I give you a complete replacement file you can copy/paste, rather than making you hunt for individual sections.
-I also checked the current APIs before rebuilding this. OpenAI currently recommends the Responses API for new applications, and ElevenLabs supports UK, Australian and Canadian English plus gender/accent voice filtering. �
-OpenAI Developers +2
+
+I also checked the current APIs before rebuilding this. OpenAI currently recommends the Responses API for new applications, and ElevenLabs supports UK, Australian and Canadian English plus gender/accent voice filtering. 
+
 This version makes LifePilot substantially more capable:
+
 🇬🇧 British female/male
+
 🇦🇺 Australian female/male
+
 🇨🇦 Canadian female/male
+
 No American voices
+
 Real ElevenLabs AI speech
+
 AI assistant instead of the current keyword-only logic
+
 Voice commands can create tasks, goals, events and habits
+
 AI can look at your existing LifePilot information
+
 "What should I do?"
+
 "What am I forgetting?"
+
 "Plan my day"
+
 "I've got two hours free — what should I work on?"
+
 "I'm exhausted — what actually needs to get done?"
+
 Voice selection remembered
+
 API keys stay on Vercel rather than inside your webpage
-ElevenLabs' current API supports the voice filtering we're using and its TTS endpoint returns generated audio. �
-ElevenLabs +1
+
+
+ElevenLabs' current API supports the voice filtering we're using and its TTS endpoint returns generated audio. 
+
 What you're going to have in GitHub
+
 Your repository should look like this:
+
 LifePilot/
 │
 ├── index.html
@@ -29,9 +51,16 @@ LifePilot/
     ├── assistant.js
     ├── speak.js
     └── voices.js
+
 You do not need to install an npm package for this version.
+
+
+---
+
 FILE 1 — index.html
+
 Delete your current index.html completely and replace it with this:
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -3565,4 +3594,193 @@ function openSettings(){
         <label>Things to remember</label>
 
         <textarea
-          id
+          id="setRemember">${esc(profile.remember||"")}</textarea>
+
+      </div>
+
+      <div id="voiceSettingsArea">
+
+        <div class="voice-settings">
+
+          <div class="voice-loading">
+            Loading LifePilot voices…
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="modal-actions">
+
+        <button
+          class="btn danger"
+          onclick="resetLifePilot()">
+          Reset LifePilot
+        </button>
+
+        <button
+          class="btn primary"
+          onclick="saveSettings()">
+          Save changes
+        </button>
+
+      </div>
+
+    `
+  );
+
+  setTimeout(
+    renderVoiceSettings,
+    100
+  );
+
+}
+
+
+function saveSettings(){
+
+  profile.userName=
+    document.getElementById(
+      "setUserName"
+    ).value.trim();
+
+  profile.assistantName=
+    document.getElementById(
+      "setAssistantName"
+    ).value.trim()||
+    "LifePilot";
+
+  profile.birthday=
+    document.getElementById(
+      "setBirthday"
+    ).value;
+
+  profile.height=
+    document.getElementById(
+      "setHeight"
+    ).value.trim();
+
+  profile.weight=
+    document.getElementById(
+      "setWeight"
+    ).value.trim();
+
+  profile.clothes=
+    document.getElementById(
+      "setClothes"
+    ).value.trim();
+
+  profile.schedule=
+    document.getElementById(
+      "setSchedule"
+    ).value.trim();
+
+  profile.remember=
+    document.getElementById(
+      "setRemember"
+    ).value.trim();
+
+  saveProfile();
+
+  closeModal();
+  updateIdentity();
+  renderMemory();
+
+  speak(
+    "I've updated your LifePilot profile."
+  );
+
+}
+
+
+function resetLifePilot(){
+
+  if(!confirm(
+    "This will erase the LifePilot information stored in this browser. Continue?"
+  ))return;
+
+  localStorage.removeItem(
+    PROFILE_KEY
+  );
+
+  localStorage.removeItem(
+    DATA_KEY
+  );
+
+  localStorage.removeItem(
+    VOICE_KEY
+  );
+
+  location.reload();
+
+}
+
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+
+function renderStats(){
+
+  const open=
+    data.tasks.filter(x=>!x.done).length;
+
+  const done=
+    data.tasks.filter(x=>x.done).length;
+
+  document.getElementById(
+    "openCount"
+  ).textContent=open;
+
+  document.getElementById(
+    "doneCount"
+  ).textContent=done;
+
+  document.getElementById(
+    "goalCount"
+  ).textContent=
+    data.goals.length;
+
+}
+
+
+function renderAll(){
+
+  renderTasks();
+  renderGoals();
+  renderMemory();
+  renderMission();
+  renderPatterns();
+  renderStats();
+
+}
+
+
+/* ============================================================
+   STARTUP
+   ============================================================ */
+
+window.addEventListener(
+  "load",
+  ()=>{
+
+    loadAvailableVoices();
+
+    if(
+      "speechSynthesis" in window
+    ){
+
+      speechSynthesis.onvoiceschanged=
+        ()=>{
+          speechSynthesis.getVoices();
+        };
+
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>
